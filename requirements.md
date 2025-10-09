@@ -271,6 +271,13 @@ Each API (Workflow 3) must be evaluated against:
 - **Fallback Strategy**: Graceful degradation if extractor unavailable
 - **Large Codebase Support**: Handle enterprise-scale repositories
 
+### Cross-Platform Compatibility
+- **Windows Support**: All workflows use PowerShell commands (Get-ChildItem, Select-String, Test-Path)
+- **CMD Fallbacks**: Alternative Windows batch commands where PowerShell unavailable
+- **Unix/Linux Support**: Traditional bash commands (find, grep, ls) for non-Windows environments
+- **Recommended Tool**: ripgrep for optimal cross-platform performance on large codebases
+- **Path Handling**: Windows backslash (\) and Unix forward slash (/) path conventions
+
 ### Documentation Website Generation (Workflow 3)
 - **MkDocs Integration**: Professional Material Design theme
 - **Docsify Alternative**: Lightweight documentation framework

@@ -52,10 +52,15 @@ Run repository API discovery workflow
 ```
 
 **What Happens**:
-1. Scans all folders in `repositories/`
-2. Identifies .NET projects with API definitions
-3. Analyzes mono-repo structures
-4. Creates `reports/repositories_with_apis.csv`
+1. **Ultra-fast scan** of `repositories/` folder (file system only)
+2. **Immediate .NET filtering** (skip non-.NET repos instantly)
+3. **Minimal API detection** using pattern matching (no file reading)
+4. **Efficient mono-repo analysis** using project structure
+5. Creates `reports/repositories_with_apis.csv`
+
+⚠️ **For Large Codebases (20-30M LOC)**: This workflow is optimized for efficiency with minimal file reading and maximum use of PowerShell/CMD commands for pattern detection on Windows.
+
+🖥️ **Windows Users**: All commands use PowerShell (Get-ChildItem, Select-String, Test-Path) with CMD fallbacks. For best performance on large codebases, consider installing ripgrep.
 
 **Expected Output**:
 ```

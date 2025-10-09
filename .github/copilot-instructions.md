@@ -111,14 +111,41 @@ Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Techno
 
 ## Analysis Approach
 
-### High-Level Analysis Only
-- ✅ File structure scanning and pattern matching
-- ✅ Project file analysis for technology identification
-- ✅ README and documentation review for context
-- ✅ Configuration file analysis for framework detection
-- ❌ Detailed code examination or business logic analysis
-- ❌ Individual endpoint extraction or security analysis
-- ❌ Performance or architectural deep-dive
+### Ultra-Efficient Analysis Only (CRITICAL for 20-30M LOC)
+- ✅ **File system structure scanning** (ls, find commands)
+- ✅ **Pattern matching without file reading** (grep for existence, not content)
+- ✅ **Project file analysis** (.csproj/.sln only, first match)
+- ✅ **README first 20 lines only** for business context
+- ✅ **Bash command efficiency** (head, wc -l, existence checks)
+- ❌ **NEVER read controller file contents**
+- ❌ **NEVER examine business logic or service layers**
+- ❌ **NEVER read full configuration files**
+- ❌ **NEVER analyze test projects or documentation**
+- ❌ **NEVER traverse bin/, obj/, node_modules/, .git/ folders**
+
+### Efficiency Rules for Large Codebases (Cross-Platform)
+- **Max 5 file reads per repository** (only .csproj, .sln, first 20 lines of README)
+- **Use PowerShell/CMD on Windows** for counting and pattern detection
+- **Skip repositories without .NET indicators** immediately
+- **Batch operations** using Get-ChildItem, Select-String, Test-Path (Windows) or find/grep (Unix)
+- **Pattern detection over content analysis** (existence checks vs file reading)
+
+### Windows-Specific Efficiency Commands
+```powershell
+# Repository scanning
+Get-ChildItem repositories\ -Directory | Select-Object -First 100
+
+# .NET project detection
+Test-Path "repositories\REPO\*.sln"
+Get-ChildItem "repositories\REPO" -Recurse -Filter "*.csproj" | Select-Object -First 1
+
+# API pattern detection
+Select-String -Path "repositories\REPO\*.cs" -Pattern "\[ApiController\]" -Recurse
+(Get-ChildItem "repositories\REPO" -Recurse -Filter "*Controller.cs").Count
+
+# Cross-platform alternative using ripgrep (recommended)
+rg "\[ApiController\]|MapGet" repositories\REPO --type cs
+```
 
 ### Detection Patterns
 

@@ -21,19 +21,74 @@ Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Techno
 
 ## Execution Steps
 
-### Phase 1: Repository Discovery
-1. **Scan repositories folder**: List all subdirectories in `repositories/`
-2. **Validate .NET projects**: Check for .NET project indicators (*.csproj, *.sln, Program.cs)
-3. **Identify repository structure**: Determine if mono-repo or single application
+### Phase 1: Ultra-Fast Repository Discovery
+1. **Quick Repository Scan**: List subdirectories (no deep traversal)
+2. **Instant .NET Filter**: Skip non-.NET repos immediately using file existence
+3. **Structure Classification**: Basic mono-repo vs single-app detection
 
-### Phase 2: API Detection Analysis
-1. **Controller Detection**: Search for files ending with `Controller.cs`
-2. **Minimal API Detection**: Look for `MapGet`, `MapPost`, `MapPut`, `MapDelete` patterns
-3. **API Attribute Detection**: Search for `[ApiController]`, `[Route]`, `[HttpGet]` attributes
-4. **Swagger/OpenAPI Detection**: Look for Swagger configuration and documentation
+**Efficiency Commands (Cross-Platform):**
+```powershell
+# Phase 1 - Ultra-fast repository listing (Windows)
+Get-ChildItem repositories\ -Directory | Select-Object -First 100 | Select-Object Name
 
-### Phase 3: Repository Analysis
-1. **Technology Stack Identification**: Analyze project files for frameworks and dependencies
+# Cross-platform alternative using ripgrep (if available)
+rg --files repositories\ | head -100
+
+# Instant .NET detection (per repository) - Windows
+Test-Path "repositories\REPO\*.sln" -or (Get-ChildItem "repositories\REPO" -Recurse -Depth 2 -Filter "*.csproj" | Select-Object -First 1)
+
+# Cross-platform using built-in tools
+dir repositories\REPO\*.sln 2>nul || dir repositories\REPO\*.csproj /s /b | findstr /m ".*" | head -1
+```
+
+### Phase 2: Minimal API Detection (File System Only)
+1. **Controller File Counting**: Count `*Controller.cs` files (no reading)
+2. **API Project Detection**: Find API-related project names
+3. **Pattern Existence Check**: Use grep for API patterns (count matches only)
+
+**Efficiency Commands (Cross-Platform):**
+```powershell
+# Count controllers without reading content (Windows)
+(Get-ChildItem "repositories\REPO" -Recurse -Filter "*Controller.cs").Count
+
+# Check for API projects by naming (Windows)
+Get-ChildItem "repositories\REPO" -Recurse -Filter "*.csproj" | Where-Object { $_.Name -match "api|web|service" -case insensitive }
+
+# Quick pattern detection (Windows PowerShell)
+Select-String -Path "repositories\REPO\*.cs" -Pattern "\[ApiController\]|MapGet|app\.Map" -Recurse | Select-Object -First 5
+
+# Cross-platform using ripgrep (recommended for large codebases)
+rg "\[ApiController\]|MapGet|app\.Map" repositories\REPO --type cs | head -5
+
+# Windows CMD fallback
+dir repositories\REPO\*Controller.cs /s /b | find /c ":"
+findstr /s /m "\[ApiController\]\|MapGet\|app\.Map" repositories\REPO\*.cs | head -5
+```
+
+### Phase 3: Minimal Technology Analysis
+1. **Project File Scanning**: Count and categorize .csproj files only
+2. **README Skimming**: First 10-20 lines only for business context
+3. **Framework Detection**: Target framework from project files only
+
+**Efficiency Commands (Cross-Platform):**
+```powershell
+# Fast project analysis (Windows)
+Get-ChildItem "repositories\REPO" -Recurse -Filter "*.csproj" | Select-Object -First 1 | ForEach-Object { Select-String -Path $_.FullName -Pattern "<TargetFramework>" | Select-Object -First 1 }
+
+# Quick README context (Windows - limit to 20 lines)
+if (Test-Path "repositories\REPO\README.md") { Get-Content "repositories\REPO\README.md" | Select-Object -First 20 } else { "No README" }
+
+# Solution structure (Windows - for mono-repo detection)
+(Get-ChildItem "repositories\REPO" -Recurse -Filter "*.sln").Count
+
+# Cross-platform using ripgrep
+rg "<TargetFramework>" repositories\REPO --type xml | head -1
+
+# Windows CMD alternatives
+findstr /s "<TargetFramework>" repositories\REPO\*.csproj | head -1
+more +1 repositories\REPO\README.md | head -20 2>nul || echo No README
+dir repositories\REPO\*.sln /s /b | find /c ":"
+```
 2. **Repository Purpose Analysis**: Examine README files, project names, and folder structure
 3. **Mono-repo Structure Mapping**: Identify individual services/applications within mono-repos
 4. **API File Path Collection**: Document specific files containing API definitions
@@ -79,15 +134,60 @@ Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Techno
 
 ## Analysis Depth Guidelines
 
-### High-Level Analysis Only
-- ✅ File structure scanning
-- ✅ Pattern matching for API indicators
-- ✅ Technology stack identification from project files
-- ✅ README and documentation review for context
-- ❌ Detailed code analysis
-- ❌ Individual endpoint extraction
-- ❌ Business logic examination
-- ❌ Security pattern analysis
+### Ultra-Efficient Analysis Strategy
+**For 20-30M lines across 60-70 repositories - EFFICIENCY CRITICAL**
+
+#### 🎯 **Smart Path Traversal (Use ONLY these patterns)**
+```powershell
+# Primary target directories (check these FIRST) - Windows paths
+\src\                     # Main source code
+\app\                     # Application root
+\api\                     # API-specific folders
+\controllers\             # Direct controller folders
+\endpoints\               # Endpoint definitions
+\web\                     # Web applications
+
+# Windows PowerShell path checking
+Test-Path "repositories\REPO\src"
+Test-Path "repositories\REPO\app"
+Test-Path "repositories\REPO\api"
+
+# Focus search on these directories only
+Get-ChildItem "repositories\REPO\src" -Recurse -Filter "*.csproj" 2>$null
+Get-ChildItem "repositories\REPO\api" -Recurse -Filter "*Controller.cs" 2>$null
+```
+
+#### 🔍 **File Analysis Strategy (MINIMAL reads)**
+1. **Repository Root Analysis** (2-3 files max):
+   - `.sln` files → Count and identify projects
+   - `README.md` → Quick business context (first 20 lines only)
+   - `Directory.Build.props` → Technology stack
+
+2. **Project Discovery** (Pattern matching only):
+   - Use `find` commands for `*.csproj` files
+   - **NO file content reading** - just count and paths
+   - Identify projects by naming patterns: `*Api*`, `*Web*`, `*Controller*`
+
+3. **API Detection** (File existence checks only):
+   - Check for `*Controller.cs` files (count, don't read)
+   - Look for `Program.cs` in API projects (presence, not content)
+   - Scan for `[controller]` or `MapGet` patterns using grep (pattern match only)
+
+#### ❌ **NEVER Do These (Token Wasters)**
+- ❌ Read controller file contents
+- ❌ Examine business logic or service layers
+- ❌ Parse configuration files beyond project files
+- ❌ Read documentation beyond first few lines of README
+- ❌ Analyze test projects or test files
+- ❌ Examine build scripts or CI/CD configurations
+- ❌ Read any files in `bin/`, `obj/`, `node_modules/`, `.git/`
+
+#### 🚀 **Efficiency Rules**
+- **Max 5 file reads per repository** (only project files and README)
+- **Use bash commands for counting and pattern detection**
+- **Leverage file system structure over file contents**
+- **Skip repositories without `.csproj` or `.sln` files immediately**
+- **Batch operations using find/grep/ls commands**
 
 ### Mono-Repo Handling
 For repositories identified as mono-repos:

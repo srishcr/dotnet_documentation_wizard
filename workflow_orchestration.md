@@ -68,11 +68,15 @@ This is the master coordination guide for the .NET Documentation Wizard's three 
 **Triggers**: "Find repositories with APIs", "Scan repositories", "Repository discovery"
 **Output**: `reports/repositories_with_apis.csv`
 
-## Execution Summary
-1. **Repository Discovery**: Scan `repositories/` folder for .NET projects
-2. **API Detection**: Identify API patterns in each repository
-3. **Technology Analysis**: Document tech stack and architecture
-4. **Report Generation**: Create comprehensive CSV inventory
+## Execution Summary (EFFICIENCY CRITICAL - 20-30M LOC)
+1. **Ultra-Fast Repository Discovery**: Quick scan with immediate .NET filtering
+2. **Minimal API Detection**: File system pattern matching (no content reading)
+3. **Lightweight Technology Analysis**: Project files and README headers only
+4. **Efficient Report Generation**: CSV creation with minimal data processing
+
+⚠️ **LARGE CODEBASE WARNING**: For 60-70 repositories with millions of lines, use ONLY file system commands, pattern matching, and existence checks. Avoid reading file contents except for .csproj/.sln and first 20 lines of README.
+
+🖥️ **WINDOWS COMPATIBILITY**: All workflows use PowerShell commands (Get-ChildItem, Select-String, Test-Path) with CMD fallbacks. Cross-platform ripgrep is recommended for optimal performance.
 
 ## Key Detection Patterns
 - Controller files (`*Controller.cs`)

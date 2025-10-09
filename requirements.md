@@ -1,139 +1,216 @@
-# .NET Codebase Documentation Wizard
+# .NET Documentation Wizard - Enterprise API Analysis Platform
 
-This project is created to create comprehensive documentation of any .net code repository. It needs to create assets in a subfolder within the code repository folder called "analysis":
-1. Create a high level business and product focused overview of the repository along with a domain diagram (analysis/01_overview.md)
-2. Create a high level technical overview of the repository containing details about the architecture, coding standards, security approach, domain model, flow diagram, high level API information (analysis/02_technical_details.md)
-3. Create an inventory list of all APIs in the code repository as a CSV (analysis/03_api_inventory.csv). Each API can be codified (Ex: eshop-api-00001). The inventory should include sensitive data classification and business journey mapping.
-4. Create a document for each API detailing the functional overview of the API, contract and request/response examples, citation to lines of code & files where the API is defined, authentication details of the API, classification of whether the API is for internal or external use, intended user roles, sensitive data analysis, OWASP API Security Top 10 assessment, and other important information. Each API should have its own file (Ex: analysis/apis/eshop-api-00001.md)
-5. Create a comprehensive catalog of APIs handling potentially sensitive data (analysis/04_sensitive_data_apis.md)
-6. Create an analysis of potential business-critical API workflows and journeys (analysis/05_business_critical_journeys.md)
-7. Include validation to ensure 100% API documentation coverage and generate a comprehensive workflow execution summary (analysis/workflow_execution_summary.md)
-8. Generate a navigable documentation website using MkDocs or Docsify with professional theming and deployment guidance
+## Overview
 
+The .NET Documentation Wizard is a comprehensive enterprise-scale platform for analyzing, mapping, and documenting APIs across multiple .NET repositories. It provides three specialized workflows that work independently or in sequence to deliver complete API landscape analysis and governance capabilities.
 
-## Key Features and Capabilities
+## System Architecture
 
-### Core Documentation Assets
-- **Business Overview**: High-level product and domain analysis with visual diagrams
-- **Technical Architecture**: Comprehensive technical documentation with security patterns
-- **API Inventory**: Complete CSV catalog with unique identifiers, sensitivity classification, and business journey mapping
-- **Individual API Documentation**: Detailed specifications for each endpoint with security analysis
-- **Sensitive Data Analysis**: Catalog of APIs handling PII, financial, authentication, and confidential data
-- **Business Journey Mapping**: Analysis of potential business-critical API workflows
-- **Validation and Quality Assurance**: 100% API coverage validation with comprehensive reporting
+### Three-Workflow Architecture
 
-### Security and Risk Assessment
-- **OWASP API Security Top 10 Assessment**: Each API evaluated against industry-standard security framework
-- **Risk Rating System**: Red/Amber/Green status indicators for security risks
-- **Business Impact Analysis**: Technical security risks translated into business impact scenarios
-- **Sensitive Data Detection**: Automated pattern recognition for PII, financial, authentication, and confidential data
+#### 🔍 **Workflow 1: Repository Discovery and API Identification**
+**Purpose**: Enterprise-scale repository scanning to identify which repositories contain API definitions
+**Scope**: Analyze multiple repositories simultaneously with technology stack identification
+**Output**: `reports/repositories_with_apis.csv` - Comprehensive repository inventory
+
+#### 🗺️ **Workflow 2: Intelligent API-to-Repository Mapping**
+**Purpose**: Map known API lists to specific repositories using intelligent matching algorithms
+**Scope**: Confidence-based mapping with multi-factor scoring and business intelligence
+**Output**: `reports/api_to_repository_mapping.csv` - API mapping with confidence levels
+
+#### 📚 **Workflow 3: Comprehensive Repository Documentation**
+**Purpose**: Deep technical and business analysis with enterprise-grade security assessment
+**Scope**: Complete documentation generation with OWASP security analysis and business journey mapping
+**Output**: Complete `analysis/` folder structure with all documentation assets
+
+### Workflow Integration Patterns
+
+#### Sequential Enterprise Pattern
+```
+Workflow 1 → Workflow 2 → Workflow 3 (on priority repositories)
+```
+For comprehensive enterprise API landscape understanding
+
+#### Focused Documentation Pattern
+```
+Workflow 3 (standalone)
+```
+For specific repository documentation when target is known
+
+#### API Governance Pattern
+```
+Workflow 1 → Workflow 3 (on multiple repositories)
+```
+For API inventory and compliance documentation
+
+## Core Capabilities
+
+### 🔍 **Workflow 1: Repository Discovery**
+
+#### Repository Analysis Features
+- **Multi-Repository Scanning**: Analyze all repositories in `repositories/` folder
+- **Technology Stack Identification**: Detect .NET versions, frameworks, and architecture patterns
+- **Mono-Repo Support**: Break down mono-repositories into individual services/applications
+- **API Pattern Detection**: Identify controllers, minimal APIs, and web API patterns
+- **Business Context Analysis**: High-level repository purpose identification
+
+#### Detection Patterns
+- **Project Indicators**: `*.csproj`, `*.sln`, `Program.cs`, `Startup.cs`
+- **API Patterns**: `*Controller.cs`, `[ApiController]`, `MapGet/Post/Put/Delete`
+- **Framework Detection**: ASP.NET Core, Web API, MVC patterns
+- **Architecture Recognition**: Clean Architecture, DDD, microservices
+
+#### Output Format: repositories_with_apis.csv
+```csv
+Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Technology Stack,Mono Repo Structure,Notes
+```
+
+### 🗺️ **Workflow 2: API Mapping Intelligence**
+
+#### Intelligent Matching System
+- **Multi-Factor Scoring**: Name similarity, domain alignment, technology compatibility, pattern matching
+- **Confidence Levels**: High (80-100%), Medium (50-79%), Low (20-49%), No Match (0-19%)
+- **Alternative Suggestions**: Multiple repository candidates per API
+- **Gap Analysis**: Identify APIs not found in any repository
+
+#### Input Format Support
+- **CSV Files**: Standard comma-separated format
+- **Excel Files**: .xlsx format support
+- **Markdown Files**: Structured list format
+
+#### Scoring Algorithm
+```
+Final Score = (Name Similarity × 0.3) + (Domain Alignment × 0.25) +
+              (Technology Match × 0.25) + (Pattern Match × 0.2)
+```
+
+#### Output Format: api_to_repository_mapping.csv
+```csv
+API Name,API Description,Probable Repository,Confidence Level,Matching Criteria,Potential Location,Service/Application,Technology Match,Notes,Recommendation
+```
+
+### 📚 **Workflow 3: Enterprise Documentation**
+
+#### Documentation Assets Generated
+1. **01_overview.md**: Business and domain overview with visual diagrams
+2. **02_technical_details.md**: Technical architecture and security patterns
+3. **03_api_inventory.csv**: Complete API catalog with unique identifiers
+4. **04_sensitive_data_apis.md**: Sensitive data handling analysis
+5. **05_business_critical_journeys.md**: Business-critical workflow mapping
+6. **workflow_execution_summary.md**: Comprehensive execution report
+7. **apis/**: Individual API documentation with OWASP security assessment
+
+#### Advanced Security Analysis
+- **OWASP API Security Top 10 (2023)**: Complete assessment for each API
+- **Risk Rating System**: Red/Amber/Green classification with business impact analysis
+- **Sensitive Data Detection**: Automated pattern recognition for PII, financial, authentication data
 - **Compliance Mapping**: GDPR, PCI-DSS, and regulatory consideration identification
 
-### Business Analysis Features
-- **Business Journey Identification**: Mapping of potential revenue-generating and customer-critical workflows
-- **API Dependency Analysis**: Understanding of API relationships and workflow dependencies
-- **Technical Complexity Assessment**: Identification of high-complexity operations requiring business attention
-- **Usage Pattern Recognition**: Analysis of authentication patterns and access control structures
+#### Business Intelligence Features
+- **Domain Analysis**: Business domain identification and mapping
+- **Journey Mapping**: Business-critical workflow identification
+- **Stakeholder Analysis**: User role and access pattern documentation
+- **Impact Assessment**: Business implications of technical security findings
 
-### Quality Assurance and Validation
-- **Comprehensive Validation**: Automated checking to ensure all discovered APIs have documentation
-- **Cross-Reference Validation**: Consistency verification across all documentation assets
-- **Coverage Reporting**: Detailed statistics on documentation completeness
-- **Workflow Execution Summary**: Transparent reporting of all analysis results and recommendations
+## Implementation Requirements
 
-### Documentation Website Generation
-- **Static Website Creation**: Automated generation of navigable documentation website using MkDocs or Docsify
-- **Responsive Design**: Mobile-friendly documentation with search functionality and organized navigation
-- **Multi-Platform Deployment**: Support for GitHub Pages, Netlify, Azure Static Web Apps, and internal servers
-- **Local Development Server**: Built-in capability for local documentation preview and testing
-- **Auto-Generated Navigation**: Dynamic menu creation based on API inventory and documentation structure
-- **Professional Theming**: Material Design theme with customizable branding and color schemes
+### Trigger Pattern Specification
 
-## Approach
+#### Workflow 1 Triggers
+```
+"Find all repositories with APIs in the repositories folder"
+"Scan repositories for API definitions using Workflow 1"
+"Run repository API discovery workflow"
+"Identify which repositories contain APIs"
+```
 
-I want to have a copilot workflow for executing this documentation workflow, with a high level overview file (copilot instructions) and detailed instructions and templates for each part of the workflow. There should be a user_runbook.md file also which explains to the user how to trigger the workflow.
+#### Workflow 2 Triggers
+```
+"Map known APIs to repositories using my API list: [file_path]"
+"Run API mapping workflow with the provided API inventory"
+"Execute Workflow 2 to map APIs to repositories"
+"Match APIs to repositories using the discovery results"
+```
 
-### Workflow Components Required
-1. **Main Coordination Script** (workflow_orchestration.md) - Detailed step-by-step workflow execution guide
-2. **Copilot Instructions** (.github/copilot-instructions.md) - High-level workflow overview and execution principles
-3. **User Runbook** (user_runbook.md) - User-facing documentation for triggering and understanding the workflow
-4. **Documentation Templates**:
-   - 01_overview_template.md - Business and domain overview template
-   - 02_technical_details_template.md - Technical architecture template
-   - 03_api_inventory_template.md - API inventory CSV template with sensitivity and journey columns
-   - individual_api_template.md - Individual API documentation template with OWASP security assessment
-   - 04_sensitive_data_template.md - Sensitive data analysis template
-   - 05_business_critical_journeys_template.md - Business journey analysis template
-   - workflow_execution_summary_template.md - Execution summary template
+#### Workflow 3 Triggers
+```
+"Generate comprehensive documentation for this repository using Workflow 3"
+"Run detailed analysis workflow on repository: [path]"
+"Create complete API documentation for this .NET codebase"
+"Execute Workflow 3 detailed analysis on [repository-name]"
+```
 
-### Workflow Execution Phases
-The workflow should be structured in distinct phases:
+### Workflow Selection Logic
+```
+IF request contains ("find" OR "scan" OR "discover") AND "repositories"
+   THEN execute Workflow 1
 
-**Phase 1: Preparation and Validation**
-- Repository path validation and .NET project structure verification
-- Static endpoint extraction using ripgrep-based analyzer
-- Analysis folder structure setup
+IF request contains ("map" OR "match" OR "align") AND "API" AND "repositories"
+   THEN execute Workflow 2
 
-**Phase 2: Documentation Generation**
-- Business overview creation with domain analysis
-- Technical details documentation with architecture patterns
-- API inventory generation with security and business analysis
-- Individual API documentation with comprehensive security assessment
+IF request contains ("documentation" OR "analyze" OR "detailed") AND specific_repository
+   THEN execute Workflow 3
+```
 
-**Phase 3: Security and Business Analysis**
-- Sensitive data pattern detection and cataloging
-- Business-critical journey identification and mapping
-- OWASP API Security Top 10 assessment for each endpoint
+### Dependency Management
 
-**Phase 4: Validation and Finalization**
-- API documentation coverage validation (100% target)
-- Cross-reference consistency verification
-- Documentation website generation with MkDocs/Docsify
-- Comprehensive workflow execution summary generation
+#### Workflow 1 Dependencies
+- ✅ Access to `repositories/` folder
+- ✅ Read permissions for repository scanning
+- ❌ No external dependencies
 
-### Static Endpoint Extraction Integration
+#### Workflow 2 Dependencies
+- ✅ Completed Workflow 1 (`reports/repositories_with_apis.csv`)
+- ✅ User-provided API list (CSV, Excel, or Markdown)
+- ✅ File access permissions
 
-### Static Endpoint Extraction Integration
+#### Workflow 3 Dependencies
+- 🔧 Optional: Results from Workflows 1 & 2 for enhanced context
+- ✅ Target repository path
+- ✅ Write permissions for analysis folder creation
+- 🔧 Optional: `static_dotnet_endpoint_extractor` for efficiency
 
-I have built a static_dotnet_endpoint_extractor script using ripgrep in the static_dotnet_endpoint_extractor folder. The workflow should first run the script to extract the endpoints from the repository path specified by the user. Then, using the output of the extractor, it needs to create the API documentation. The reason for this is to make this workflow efficient even for large codebases and save copilot context by pre-extracting the endpoint patterns from files. It is designed to improve efficiency and help preserve context for copilot.
+## File Structure Requirements
 
-### Analysis Requirements
+### Project Organization
+```
+dotnet_documentation_wizard/
+├── 📋 Master Coordination Files
+│   ├── workflow_orchestration.md           # Master workflow coordination
+│   ├── user_runbook.md                     # User guide with clear triggers
+│   └── .github/copilot-instructions.md     # Comprehensive AI instructions
+├── 🔍 Individual Workflow Documentation
+│   ├── workflow_1_find_apis.md             # Repository discovery workflow
+│   ├── workflow_2_map_apis.md              # API mapping workflow
+│   └── workflow_3_detailed_analysis.md     # Detailed documentation workflow
+├── 📁 Supporting Infrastructure
+│   ├── reports/                            # Workflow 1 & 2 outputs
+│   ├── templates/                          # Documentation templates
+│   ├── static_dotnet_endpoint_extractor/   # Efficiency tool for Workflow 3
+│   ├── repositories/                       # Target repositories for analysis
+│   └── meta_prompts/                       # Meta-requirements and prompts
+```
 
-#### Sensitive Data Detection
-The workflow must automatically identify APIs handling sensitive data through:
-- **Pattern-based Analysis**: Scanning field names for PII, financial, authentication, and confidential data indicators
-- **Model Inspection**: Analyzing request/response models for sensitive data types
-- **Security Classification**: Categorizing APIs by data sensitivity for security review
-- **Compliance Mapping**: Identifying potential GDPR, PCI-DSS, and regulatory considerations
+### Template System
+All workflows use standardized templates for consistent output:
+- `01_overview_template.md` - Business and domain overview
+- `02_technical_details_template.md` - Technical architecture
+- `03_api_inventory_template.md` - API inventory format
+- `individual_api_template.md` - Individual API documentation
+- `04_sensitive_data_template.md` - Sensitive data analysis
+- `05_business_critical_journeys_template.md` - Business journey analysis
+- `workflow_execution_summary_template.md` - Execution summary
 
-Detection patterns should include:
+## Security and Compliance Framework
+
+### Sensitive Data Detection Patterns
 - **PII Indicators**: email, phone, address, name, ssn, birth, id
 - **Financial Indicators**: card, payment, billing, amount, account, transaction, balance
 - **Authentication Indicators**: password, token, secret, credential, auth
 - **Confidential Indicators**: internal, admin, private, confidential, config
 
-#### Business Journey Analysis
-The workflow must identify potential business-critical workflows through:
-- **API Relationship Mapping**: Analyzing controller dependencies and service interactions
-- **Usage Pattern Recognition**: Identifying high-complexity and high-frequency operations
-- **Core Entity Analysis**: Mapping APIs to fundamental business entities (users, orders, products)
-- **Workflow Sequencing**: Documenting potential multi-step business processes
-
-Journey identification criteria:
-- Complex business logic patterns
-- Financial transaction involvement
-- User authentication dependencies
-- External system integrations
-- Core CRUD operations on business entities
-
-#### OWASP API Security Assessment
-Each individual API documentation must include comprehensive security assessment against OWASP API Security Top 10 (2023):
-- **Risk Rating System**: Red (high risk), Amber (medium risk), Green (low risk)
-- **Technical Analysis**: Code-based evaluation of security implementations
-- **Business Impact Assessment**: Description of how each risk could affect business operations
-- **Remediation Guidance**: Specific recommendations for identified security gaps
-
-Assessment must cover all 10 categories:
+### OWASP API Security Top 10 (2023) Assessment
+Each API (Workflow 3) must be evaluated against:
 1. API1:2023 - Broken Object Level Authorization
 2. API2:2023 - Broken Authentication
 3. API3:2023 - Broken Object Property Level Authorization
@@ -145,10 +222,71 @@ Assessment must cover all 10 categories:
 9. API9:2023 - Improper Inventory Management
 10. API10:2023 - Unsafe Consumption of APIs
 
-### Implementation Guidelines
+### Risk Rating System
+- **Red (High Risk)**: Immediate attention required, significant business impact
+- **Amber (Medium Risk)**: Review recommended, moderate business impact
+- **Green (Low Risk)**: Best practices followed, minimal business impact
 
-#### Analysis Approach (Not Prescriptive)
-The workflow should focus on **identification and analysis** rather than making business decisions:
+## Quality Assurance Requirements
+
+### Validation Standards
+- **Template Compliance**: All outputs follow standardized templates
+- **Cross-Reference Validation**: Consistency across all documents (Workflow 3)
+- **Markdown Syntax**: Valid formatting for all generated files
+- **Coverage Requirements**: 100% API documentation (Workflow 3 only)
+- **File Naming**: Consistent conventions (project-api-XXXXX format)
+
+### Error Handling Strategy
+- **Missing Dependencies**: Graceful fallback with clear error messages
+- **Large Repositories**: Progressive analysis with context management
+- **Permission Issues**: Clear guidance for resolution
+- **Validation Failures**: Detailed reporting with remediation steps
+
+### Success Criteria
+
+#### Workflow 1 Success
+- ✅ Complete repository inventory generated
+- ✅ Accurate API detection across all repositories
+- ✅ Valid CSV format with all required columns
+- ✅ Technology stack properly identified
+
+#### Workflow 2 Success
+- ✅ All provided APIs have mapping entries
+- ✅ Confidence levels properly assigned
+- ✅ Clear recommendations for each API
+- ✅ Valid CSV format with comprehensive data
+
+#### Workflow 3 Success
+- ✅ 100% API documentation coverage achieved
+- ✅ All templates properly populated
+- ✅ Security analysis completed for all APIs
+- ✅ Cross-reference validation successful
+- ✅ Execution summary comprehensive and actionable
+
+## Enterprise Integration Features
+
+### Static Endpoint Extraction (Workflow 3)
+- **Efficiency Tool**: `static_dotnet_endpoint_extractor` using ripgrep
+- **Context Preservation**: Pre-extract API patterns to save AI context
+- **Fallback Strategy**: Graceful degradation if extractor unavailable
+- **Large Codebase Support**: Handle enterprise-scale repositories
+
+### Documentation Website Generation (Workflow 3)
+- **MkDocs Integration**: Professional Material Design theme
+- **Docsify Alternative**: Lightweight documentation framework
+- **Responsive Design**: Mobile-friendly with search functionality
+- **Deployment Options**: GitHub Pages, Netlify, Azure Static Web Apps
+- **Auto-Navigation**: Dynamic menu generation from API inventory
+
+### CI/CD Integration Potential
+- **Automated Execution**: Workflow triggers for CI/CD pipelines
+- **Quality Gates**: Documentation coverage and security assessment integration
+- **Governance**: API compliance checking and reporting
+
+## Analysis Approach Guidelines
+
+### Identification vs. Prescription
+The workflows focus on **identification and analysis** rather than making business decisions:
 - ✅ Detect sensitive data patterns in code
 - ✅ Map potential business journeys
 - ✅ Document security patterns found
@@ -157,58 +295,54 @@ The workflow should focus on **identification and analysis** rather than making 
 - ❌ Do NOT define SLAs or business requirements
 - ❌ Do NOT make architectural decisions
 
-#### Quality Assurance Requirements
-- Markdown syntax validation for all generated files
-- Template compliance verification for consistent structure
-- File naming convention adherence (project-api-XXXXX format)
-- 100% API documentation coverage validation
-- Cross-reference consistency verification
-- Comprehensive execution reporting
+### Business Context Integration
+- **Domain-Driven Analysis**: Identify business domains from code structure
+- **Stakeholder Mapping**: Analyze user roles from authentication patterns
+- **Journey Identification**: Map potential business workflows from API relationships
+- **Impact Assessment**: Translate technical findings to business implications
 
-#### Error Handling Strategy
-- Fallback to manual analysis if endpoint extractor fails
-- Graceful handling of large codebases with context management
-- Clear error reporting with resolution guidance
-- Progressive workflow execution with validation checkpoints
+## Implementation Instructions
 
-### Expected Deliverables
+### Required Deliverables
+When implementing this system, create:
 
-I want you to create all the copilot workflow files based on this requirement. I have included a sample repository in the repositories/eShopOnWeb-main folder and the output of the endpoint extractor script in this file eShopOnWeb-main_rigrep_endpoints.txt for your reference.
+1. **Master Coordination Files**
+   - `workflow_orchestration.md` - Master workflow coordination with clear selection logic
+   - `user_runbook.md` - User guide with unambiguous trigger patterns
+   - `.github/copilot-instructions.md` - Comprehensive AI instructions for all workflows
 
-### Expected Deliverables
+2. **Individual Workflow Documentation**
+   - `workflow_1_find_apis.md` - Complete repository discovery specification
+   - `workflow_2_map_apis.md` - Intelligent API mapping specification
+   - `workflow_3_detailed_analysis.md` - Comprehensive documentation specification
 
-When the workflow is complete, it should generate:
+3. **Supporting Infrastructure**
+   - `reports/` folder creation
+   - Template validation and consistency
+   - Clear dependency documentation
+   - Error handling specifications
 
-```
-repository/
-├── analysis/
-│   ├── 01_overview.md                    # Business and domain overview
-│   ├── 02_technical_details.md           # Technical architecture details
-│   ├── 03_api_inventory.csv              # Complete API inventory with security/business analysis
-│   ├── 04_sensitive_data_apis.md         # Sensitive data handling APIs catalog
-│   ├── 05_business_critical_journeys.md  # Business-critical workflow analysis
-│   ├── workflow_execution_summary.md     # Comprehensive execution report
-│   └── apis/                             # Individual API documentation
-│       ├── {project}-api-00001.md        # Detailed API specs with OWASP assessment
-│       ├── {project}-api-00002.md
-│       └── ... (all discovered APIs)
-```
+### Validation Requirements
+- **Trigger Pattern Consistency**: Ensure all files use identical trigger patterns
+- **Dependency Clarity**: Clear prerequisite requirements for each workflow
+- **Output Format Standardization**: Consistent CSV and markdown formats
+- **Template Compliance**: All outputs follow established templates
 
-### Success Criteria
+### Enterprise Readiness
+- **Scalability**: Handle multiple repositories and large codebases
+- **Security**: Comprehensive security analysis and risk assessment
+- **Governance**: Support enterprise API governance requirements
+- **Maintainability**: Documentation structure supports ongoing updates
 
-A successful workflow implementation should:
-1. **Complete Documentation Coverage**: 100% of discovered APIs documented with validation confirmation
-2. **Security Analysis Integration**: OWASP assessment and sensitive data analysis for all APIs
-3. **Business Intelligence**: Business journey mapping and criticality analysis
-4. **Quality Assurance**: Comprehensive validation and cross-reference verification
-5. **Transparency**: Complete workflow execution summary with actionable insights
-6. **Maintainability**: Documentation structure that supports ongoing updates and governance
-7. **Compliance Readiness**: Security and compliance considerations documented for business review
+## Success Validation
 
-### Reference Implementation
+A successful implementation should enable:
+1. **Clear Workflow Selection**: Unambiguous trigger patterns for each workflow
+2. **Independent Execution**: Each workflow operates standalone when needed
+3. **Sequential Integration**: Workflows enhance each other when used in sequence
+4. **Enterprise Scale**: Handle multiple repositories and complex architectures
+5. **Security Focus**: Comprehensive security analysis and risk assessment
+6. **Business Intelligence**: Meaningful business context and impact analysis
+7. **Quality Assurance**: Validation and consistency across all outputs
 
-I have included a sample repository in the repositories/eShopOnWeb-main folder and the output of the endpoint extractor script in this file eShopOnWeb-main_rigrep_endpoints.txt for your reference.
-
-### Generation Instructions
-
-Generate all the required files based on this comprehensive requirement specification. The workflow should be production-ready and suitable for enterprise-grade API documentation and governance. Ask me any clarifications if required before you proceed.
+This specification provides complete requirements for building an enterprise-grade API analysis and documentation platform suitable for large-scale .NET environments with comprehensive security and governance capabilities.

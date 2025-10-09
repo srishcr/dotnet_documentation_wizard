@@ -1,198 +1,305 @@
-# .NET Codebase Documentation Wizard - Copilot Instructions
+# .NET Documentation Wizard - Comprehensive Copilot Instructions
 
 ## Overview
 
-This workflow provides comprehensive documentation generation for .NET codebases. The system creates a complete analysis including business overview, technical architecture details, API inventory, and individual API documentation files.
+The .NET Documentation Wizard provides three specialized workflows for enterprise-scale API discovery, mapping, and documentation. Each workflow serves a specific purpose in the comprehensive API analysis pipeline.
 
-## Workflow Purpose
+## Available Workflows
 
-This copilot workflow is designed to:
-1. Analyze any .NET codebase comprehensively
-2. Extract business and technical insights
-3. Create structured documentation assets
-4. Generate detailed API inventories and specifications
-5. Provide actionable insights for development teams
+### 🔍 Workflow 1: Find Repositories with APIs
+**Purpose**: Scan all repositories to identify which ones contain API definitions
+**Trigger Patterns**: "Find all repositories with APIs", "Scan repositories for API definitions", "Run repository API discovery"
+**Output**: `reports/repositories_with_apis.csv`
 
-## Key Components
+### 🗺️ Workflow 2: Map Known APIs to Repositories
+**Purpose**: Map provided API lists to specific repositories and locations
+**Trigger Patterns**: "Map known APIs to repositories", "Run API mapping workflow", "Execute Workflow 2"
+**Output**: `reports/api_to_repository_mapping.csv`
 
-### Documentation Assets Generated
-- **01_overview.md**: High-level business and product overview with domain diagrams
-- **02_technical_details.md**: Technical architecture, coding standards, and system design
-- **03_api_inventory.csv**: Complete API inventory with sensitivity and business journey analysis
-- **04_sensitive_data_apis.md**: Catalog of APIs handling potentially sensitive data
-- **05_business_critical_journeys.md**: Analysis of potential business-critical API workflows
-- **apis/**: Individual API documentation files with detailed specifications and security analysis
-- **workflow_execution_summary.md**: Comprehensive validation results and execution summary
+### 📚 Workflow 3: Detailed Repository Analysis
+**Purpose**: Generate comprehensive documentation for a specific repository
+**Trigger Patterns**: "Generate comprehensive documentation", "Run detailed analysis", "Execute Workflow 3"
+**Output**: Complete `analysis/` folder with comprehensive documentation
 
-### Supporting Tools
-- **Static Endpoint Extractor**: Pre-analyzes codebase using ripgrep for efficiency
-- **Template System**: Consistent documentation structure
-- **Automated Code Analysis**: Intelligent parsing of .NET patterns
+## Workflow Selection Logic
 
-## Workflow Execution Approach
+When user requests include:
+- **"find", "scan", "discover" + "repositories"** → Execute Workflow 1
+- **"map", "match", "align" + "API" + "repositories"** → Execute Workflow 2
+- **"documentation", "analyze", "detailed" + specific repository** → Execute Workflow 3
 
-### Phase 1: Preparation and Analysis
-1. **Repository Path Validation**: Ensure valid .NET project structure
-2. **Endpoint Extraction**: Run static analyzer to extract API patterns
-3. **Codebase Structure Analysis**: Understand project organization and architecture
+## Core Principles
 
-### Phase 2: Business Documentation
-1. **Domain Analysis**: Identify business domains and capabilities
-2. **Product Overview**: Create high-level business context
-3. **Domain Diagrams**: Generate visual representations of business logic
-
-### Phase 3: Technical Documentation
-1. **Architecture Analysis**: Document system architecture and patterns
-2. **Technology Stack**: Identify frameworks, libraries, and dependencies
-3. **Security and Standards**: Document coding patterns and security approaches
-
-### Phase 4: API Documentation
-1. **API Inventory Creation**: Generate comprehensive CSV inventory with security and business analysis
-2. **API Categorization**: Classify APIs by purpose, access patterns, data sensitivity, and business journey
-3. **Individual API Documentation**: Create detailed specifications for each endpoint including security analysis
-
-### Phase 5: Security and Business Analysis
-1. **Sensitive Data Analysis**: Identify and catalog APIs handling sensitive information
-2. **Business Critical Journey Mapping**: Analyze potential business-critical API workflows
-### Phase 6: Validation and Finalization
-1. **API Documentation Validation**: Ensure all APIs from inventory have documentation files
-2. **Cross-Reference Validation**: Verify consistency across all documentation
-3. **Workflow Execution Summary**: Generate comprehensive completion report
-
-## Key Principles
-
-### Efficiency First
-- Use static analysis to reduce context overhead
-- Process large codebases without overwhelming token limits
-- Leverage pre-extracted endpoint data for focused analysis
+### Efficiency and Scalability
+- Use static analysis to minimize context overhead
+- Handle large codebases without overwhelming token limits
+- Leverage pre-extracted data for focused analysis
+- Implement progressive analysis with validation checkpoints
 
 ### Comprehensive Coverage
-- Analyze both modern minimal APIs and traditional MVC patterns
+- Support modern minimal APIs and traditional MVC patterns
 - Document authentication, authorization, and security patterns
 - Include business context alongside technical details
+- Ensure 100% API documentation coverage for Workflow 3
 
-### Actionable Insights
-- Provide clear categorization (internal vs external APIs)
-- Identify user roles and access patterns
-- Include code citations for traceability
+### Actionable Intelligence
+- Provide clear categorization and confidence levels
+- Generate security assessments and business impact analysis
+- Include precise code citations for traceability
+- Create structured reports for enterprise governance
 
-### Consistent Structure
-- Use standardized templates for all documentation
-- Maintain consistent API codification (e.g., eshop-api-00001)
-- Follow established documentation patterns
+---
 
-## Execution Instructions
+# 🔍 WORKFLOW 1: FIND REPOSITORIES WITH APIs
 
-### When User Triggers Workflow
+## Execution Trigger Recognition
 
-1. **Validate Input**
-   - Confirm repository path exists
-   - Verify .NET project structure
-   - Check for endpoint extractor availability
+### Primary Triggers
+- "Find all repositories with APIs in the repositories folder"
+- "Scan repositories for API definitions using Workflow 1"
+- "Run repository API discovery workflow"
+- "Identify which repositories contain APIs"
 
-2. **Run Endpoint Extraction**
-   - Execute static_dotnet_endpoint_extractor script
-   - Parse extracted endpoint data
-   - Validate extraction results
+### Contextual Indicators
+- User mentions analyzing multiple repositories
+- Request for repository inventory or overview
+- Need to understand API landscape across projects
 
-3. **Create Analysis Folder**
-   - Create `analysis/` subfolder in repository
-   - Create `analysis/apis/` subfolder for individual API docs
+## Execution Steps
 
-4. **Generate Documentation Assets**
-   - Execute in sequence: overview → technical → inventory → individual APIs
-   - Use templates for consistent structure
-   - Apply intelligent analysis for each component
+### Phase 1: Repository Discovery
+1. **Validate Environment**: Ensure `repositories/` folder exists
+2. **Scan Structure**: List all subdirectories in repositories folder
+3. **Initial Assessment**: Quick validation of folder contents
 
-5. **Validate Documentation Completeness**
-   - Parse API inventory to extract all expected API codes
-   - Compare existing API documentation files against inventory
-   - Identify and create missing API documentation files
-   - Generate validation report with coverage statistics
+### Phase 2: .NET Project Identification
+1. **Project File Detection**: Search for `*.csproj`, `*.sln` files
+2. **Framework Identification**: Analyze project files for .NET versions
+3. **Structure Analysis**: Determine mono-repo vs single-app architecture
 
-6. **Finalize and Summarize**
-   - Perform cross-reference validation across all documents
-   - Create comprehensive workflow execution summary including security and business analysis
-   - Ensure all files are created successfully
-   - Provide completion summary with security and business insights to user
+### Phase 3: API Pattern Detection
+1. **Controller Detection**: Search for files ending with `Controller.cs`
+2. **Minimal API Detection**: Look for `MapGet`, `MapPost`, `MapPut`, `MapDelete` patterns
+3. **Attribute Analysis**: Search for `[ApiController]`, `[Route]`, `[Http*]` attributes
+4. **Configuration Analysis**: Look for Swagger/OpenAPI configurations
 
-## Template Usage Guidelines
+### Phase 4: Technology Stack Analysis
+1. **Framework Analysis**: Extract .NET version and web frameworks
+2. **Package Dependencies**: Analyze NuGet packages for technology identification
+3. **Architecture Patterns**: Identify Clean Architecture, DDD, MVC patterns
 
-### For 01_overview.md
-- Focus on business value and product capabilities
-- Use domain-driven design principles
-- Include stakeholder perspectives
-- Generate simple domain diagrams using Mermaid
+### Phase 5: Report Generation
+1. **CSV Creation**: Generate `reports/repositories_with_apis.csv`
+2. **Data Validation**: Verify completeness and accuracy
+3. **Summary Generation**: Provide execution summary to user
 
-### For 02_technical_details.md
-- Document architecture patterns (layered, clean, etc.)
-- Identify frameworks and key technologies
-- Document security approaches and patterns
-- Include technical diagrams for system flow
+## CSV Report Format
 
-### For 03_api_inventory.csv
-- Assign unique codes to each API (project-api-XXXXX format)
-- Categorize by business domain
-- Include access level classification
-- Add discovery metadata (file paths, line numbers)
+```csv
+Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Technology Stack,Mono Repo Structure,Notes
+```
 
-### For Individual API Files
-- Use endpoint-specific code as filename
-- Include comprehensive contract documentation
-- Add request/response examples
-- Cite exact code locations
-- Document authentication requirements
-- Conduct OWASP API Security Top 10 assessment with red/amber/green risk ratings
-- Provide technical implementation context and business impact analysis for security risks
+### Column Specifications
+- **Repository Path**: Relative path from repositories folder
+- **Contains APIs**: Yes/No based on API pattern detection
+- **Repository Type**: Single App, Mono Repo, Library, Unknown
+- **Summary**: 1-2 sentence description of repository purpose
+- **Potential API Files**: Comma-separated list of files with API patterns
+- **Technology Stack**: Key technologies (.NET version, frameworks, etc.)
+- **Mono Repo Structure**: Semicolon-separated list of services/applications
+- **Notes**: Additional observations or recommendations
 
-### For workflow_execution_summary.md
-- Document all validation results and coverage statistics
-- Provide comprehensive asset inventory with file details
-- Include performance metrics and execution timeline
-- Offer maintenance recommendations and next steps
-- Generate actionable insights for development teams
-- Include security and business analysis summaries
+## Analysis Approach
 
-## Sensitive Data and Business Analysis
+### High-Level Analysis Only
+- ✅ File structure scanning and pattern matching
+- ✅ Project file analysis for technology identification
+- ✅ README and documentation review for context
+- ✅ Configuration file analysis for framework detection
+- ❌ Detailed code examination or business logic analysis
+- ❌ Individual endpoint extraction or security analysis
+- ❌ Performance or architectural deep-dive
 
-### Sensitive Data Detection
-The workflow automatically identifies APIs handling potentially sensitive data through:
+### Detection Patterns
 
-- **Pattern-based Analysis**: Scanning for field names indicating PII, financial, authentication, or confidential data
-- **Model Inspection**: Analyzing request/response models for sensitive data types
-- **Security Classification**: Categorizing APIs by data sensitivity for security review
-- **Compliance Mapping**: Identifying potential GDPR, PCI-DSS, and regulatory considerations
+#### .NET Project Indicators
+```
+*.csproj, *.sln, Program.cs, Startup.cs, appsettings.json
+```
 
-#### Detection Patterns
+#### API Implementation Patterns
+```
+*Controller.cs files
+[ApiController] attributes
+[Route] attributes
+[HttpGet/Post/Put/Delete] attributes
+app.Map* method calls (minimal APIs)
+Swagger/OpenAPI configurations
+```
+
+#### Technology Stack Indicators
+```
+<TargetFramework> in project files
+Package references (Microsoft.AspNetCore.*)
+Using statements analysis
+Configuration patterns
+```
+
+---
+
+# 🗺️ WORKFLOW 2: MAP KNOWN APIs TO REPOSITORIES
+
+## Execution Trigger Recognition
+
+### Primary Triggers
+- "Map known APIs to repositories using my API list: [file]"
+- "Run API mapping workflow with the provided API inventory"
+- "Execute Workflow 2 to map APIs to repositories"
+- "Match APIs to repositories using the discovery results"
+
+### Prerequisites Validation
+1. **Workflow 1 Dependency**: Verify `reports/repositories_with_apis.csv` exists
+2. **API List Validation**: Confirm user-provided API list is accessible
+3. **Format Support**: Validate CSV, Excel, or Markdown format
+
+## Execution Steps
+
+### Phase 1: Input Processing
+1. **API List Parsing**: Read and standardize user-provided API list
+2. **Repository Data Loading**: Load results from Workflow 1
+3. **Data Normalization**: Standardize formats for matching algorithms
+4. **Validation**: Verify data completeness and format integrity
+
+### Phase 2: Matching Analysis
+1. **Name-Based Matching**: Direct API name matches with repository names
+2. **Domain Alignment**: Match business domains and functional areas
+3. **Pattern Recognition**: Endpoint pattern matching with repository structure
+4. **Technology Compatibility**: Align technology requirements with capabilities
+
+### Phase 3: Confidence Scoring
+1. **Multi-Factor Analysis**: Combine name, domain, pattern, and technology scores
+2. **Confidence Assignment**: Calculate High (80-100%), Medium (50-79%), Low (20-49%)
+3. **Alternative Identification**: Find secondary repository candidates
+4. **Gap Analysis**: Identify APIs with no probable matches
+
+### Phase 4: Report Generation
+1. **Mapping Report**: Create `reports/api_to_repository_mapping.csv`
+2. **Summary Statistics**: Generate matching success rates and distributions
+3. **Recommendations**: Provide actionable next steps for each API
+
+## Matching Algorithm
+
+### Scoring Components
+```
+Final Score = (Name Similarity * 0.3) +
+              (Domain Alignment * 0.25) +
+              (Technology Match * 0.25) +
+              (Pattern Match * 0.2)
+```
+
+### Confidence Levels
+- **High (80-100%)**: Multiple strong indicators align
+- **Medium (50-79%)**: Some indicators align, requires validation
+- **Low (20-49%)**: Weak indicators, manual review needed
+- **No Match (0-19%)**: No meaningful alignment found
+
+## CSV Report Format
+
+```csv
+API Name,API Description,Probable Repository,Confidence Level,Matching Criteria,Potential Location,Service/Application,Technology Match,Notes,Recommendation
+```
+
+---
+
+# 📚 WORKFLOW 3: DETAILED REPOSITORY ANALYSIS
+
+## Execution Trigger Recognition
+
+### Primary Triggers
+- "Generate comprehensive documentation for this repository using Workflow 3"
+- "Run detailed analysis workflow on repository: [path]"
+- "Create complete API documentation for this .NET codebase"
+- "Execute Workflow 3 detailed analysis on [repository-name]"
+
+### Context Enhancement
+- Use results from Workflows 1 & 2 if available for enhanced context
+- Accept specific repository paths or work with current directory
+- Leverage previous analysis for focused documentation
+
+## Execution Phases
+
+### Phase 1: Preparation and Validation
+1. **Repository Path Validation**: Ensure target is valid .NET project
+2. **Static Endpoint Extraction**: Execute `static_dotnet_endpoint_extractor`
+3. **Analysis Folder Setup**: Create `analysis/` and `analysis/apis/` folders
+4. **Context Integration**: Incorporate insights from previous workflows
+
+### Phase 2: Documentation Generation
+1. **Business Overview**: Generate `01_overview.md` with domain analysis
+2. **Technical Details**: Create `02_technical_details.md` with architecture documentation
+3. **API Inventory**: Generate `03_api_inventory.csv` with comprehensive API catalog
+4. **Individual APIs**: Create detailed documentation for each endpoint
+
+### Phase 3: Security and Business Analysis
+1. **Sensitive Data Analysis**: Generate `04_sensitive_data_apis.md`
+2. **Business Journeys**: Create `05_business_critical_journeys.md`
+3. **OWASP Assessment**: Conduct security analysis for each API
+4. **Compliance Mapping**: Identify regulatory considerations
+
+### Phase 4: Validation and Finalization
+1. **Coverage Validation**: Ensure 100% API documentation coverage
+2. **Cross-Reference Verification**: Validate consistency across documents
+3. **Quality Assurance**: Verify template compliance and markdown syntax
+4. **Execution Summary**: Generate `workflow_execution_summary.md`
+
+## Documentation Templates Integration
+
+### Template Usage Guidelines
+- **01_overview_template.md**: Business and domain overview structure
+- **02_technical_details_template.md**: Technical architecture template
+- **individual_api_template.md**: Individual API documentation format
+- **workflow_execution_summary_template.md**: Execution summary structure
+
+### Template Compliance Requirements
+- Follow exact section structures from templates
+- Maintain consistent formatting and terminology
+- Include all required sections and subsections
+- Use standardized code citation formats
+
+## Static Endpoint Extraction Integration
+
+### Extractor Workflow (Workflow 3 Only)
+1. **Pre-Analysis**: Execute `static_dotnet_endpoint_extractor` script
+2. **Pattern Extraction**: Use optimized ripgrep queries for API pattern identification
+3. **Context Optimization**: Use pre-extracted data to preserve context for analysis
+4. **Fallback Handling**: Graceful degradation if extractor unavailable
+
+---
+
+# SECURITY AND BUSINESS ANALYSIS FRAMEWORK
+
+## Sensitive Data Detection (Workflows 2 & 3)
+
+### Detection Patterns
 - **PII Indicators**: `email`, `phone`, `address`, `name`, `ssn`, `birth`, `id`
-- **Financial Indicators**: `card`, `payment`, `billing`, `amount`, `account`, `transaction`
+- **Financial Indicators**: `card`, `payment`, `billing`, `amount`, `account`, `transaction`, `balance`
 - **Authentication Indicators**: `password`, `token`, `secret`, `credential`, `auth`
 - **Confidential Indicators**: `internal`, `admin`, `private`, `confidential`, `config`
 
-### Business Journey Analysis
-The workflow identifies potential business-critical workflows through:
+### Analysis Approach
+1. **Pattern-based Analysis**: Field name scanning for sensitive data indicators
+2. **Model Inspection**: Request/response model analysis for data types
+3. **Security Classification**: API categorization by data sensitivity
+4. **Compliance Mapping**: GDPR, PCI-DSS, and regulatory identification
 
-- **API Relationship Mapping**: Analyzing controller dependencies and service interactions
-- **Usage Pattern Recognition**: Identifying high-complexity and high-frequency operations
-- **Core Entity Analysis**: Mapping APIs to fundamental business entities (users, orders, products)
-- **Workflow Sequencing**: Documenting potential multi-step business processes
+## OWASP API Security Assessment (Workflow 3 Only)
 
-#### Journey Identification Criteria
-- Complex business logic patterns
-- Financial transaction involvement
-- User authentication dependencies
-- External system integrations
-- Core CRUD operations on business entities
+### Risk Rating System
+- **Red (High Risk)**: Immediate attention required, significant business impact
+- **Amber (Medium Risk)**: Review recommended, moderate business impact
+- **Green (Low Risk)**: Best practices followed, minimal business impact
 
-### OWASP API Security Assessment
-Each individual API documentation includes a comprehensive security assessment against the OWASP API Security Top 10 (2023):
-
-- **Risk Rating System**: Red (high risk), Amber (medium risk), Green (low risk)
-- **Technical Analysis**: Code-based evaluation of security implementations
-- **Business Impact Assessment**: Description of how each risk could affect business operations
-- **Remediation Guidance**: Specific recommendations for identified security gaps
-
-#### OWASP Top 10 Categories Assessed:
+### Assessment Categories
 1. **API1:2023** - Broken Object Level Authorization
 2. **API2:2023** - Broken Authentication
 3. **API3:2023** - Broken Object Property Level Authorization
@@ -204,88 +311,120 @@ Each individual API documentation includes a comprehensive security assessment a
 9. **API9:2023** - Improper Inventory Management
 10. **API10:2023** - Unsafe Consumption of APIs
 
-## Validation Process
+## Business Journey Analysis (Workflows 2 & 3)
 
-### API Documentation Validation
-1. **Inventory Parsing**: Extract all API codes from `03_api_inventory.csv`
-2. **File Verification**: Check existence of corresponding `.md` files in `apis/` directory
-3. **Gap Analysis**: Identify missing API documentation files
-4. **Documentation Generation**: Create missing API documentation using templates
-5. **Coverage Reporting**: Generate validation statistics and completion status
+### Journey Identification Criteria
+- Complex business logic patterns
+- Financial transaction involvement
+- User authentication dependencies
+- External system integrations
+- Core CRUD operations on business entities
 
-### Cross-Reference Validation
-1. **Domain Consistency**: Ensure business domains align across all documents
-2. **API Classification**: Verify access levels and user roles are consistent
-3. **Technical Accuracy**: Validate code citations and implementation details
-4. **Link Verification**: Check internal references and cross-document links
+### Analysis Components
+1. **API Relationship Mapping**: Controller dependencies and service interactions
+2. **Usage Pattern Recognition**: High-complexity and high-frequency operations
+3. **Core Entity Analysis**: Mapping to business entities (users, orders, products)
+4. **Workflow Sequencing**: Multi-step business process documentation
 
-### Quality Assurance Checks
-- Markdown syntax validation for all generated files
-- Template compliance verification for consistent structure
-- File naming convention adherence (project-api-XXXXX format)
-- Completeness verification for all required documentation sections
+---
 
-## Error Handling
+# ERROR HANDLING AND QUALITY ASSURANCE
 
-### Missing Dependencies
-- If endpoint extractor fails, provide manual analysis guidance
-- Fall back to basic file scanning if ripgrep unavailable
-- Provide clear error messages with resolution steps
+## Error Handling Strategy
 
-### Large Codebases
-- Use chunked analysis for massive repositories
-- Prioritize high-value endpoints and controllers
-- Provide progress indicators for long-running operations
+### Missing Dependencies (All Workflows)
+- Graceful handling when required files are missing
+- Clear error messages with resolution guidance
+- Fallback mechanisms for tool unavailability
+- Progressive execution with validation checkpoints
 
-### Incomplete Analysis
-- Document areas requiring manual review
-- Flag potential security concerns
-- Identify missing documentation opportunities
+### Large Codebase Handling (Workflow 3)
+- Chunked analysis for massive repositories
+- Context management to avoid token limits
+- Progress indicators for long-running operations
+- Prioritization of high-value endpoints
 
-## Quality Assurance
+### Validation Requirements (All Workflows)
+- Report completeness verification
+- Format validation for CSV outputs
+- Cross-reference consistency checking
+- Template compliance verification
 
-### Documentation Standards
-- Ensure all generated files are valid Markdown
-- Validate CSV format and structure
-- Check for broken links and references
+## Quality Assurance Checks
 
-### Content Quality
-- Verify business context accuracy
-- Ensure technical details are current
-- Validate API classifications and access levels
+### Documentation Standards (Workflow 3)
+- Markdown syntax validation
+- Template structure compliance
+- Consistent formatting and terminology
+- Code citation accuracy
 
-### Completeness Checks
-- Confirm all discovered endpoints are documented
-- Verify cross-reference consistency
-- Ensure template compliance
-- Validate API documentation coverage reaches 100%
-- Check that workflow execution summary is comprehensive and actionable
+### Coverage Requirements (Workflow 3)
+- 100% API documentation coverage validation
+- Cross-reference consistency verification
+- Quality assurance reporting
+- Comprehensive execution summaries
+
+---
+
+# EXECUTION INSTRUCTIONS
+
+## User Interaction Protocol
+
+### Workflow Identification
+1. **Parse User Request**: Identify workflow through trigger patterns
+2. **Validate Prerequisites**: Check for required dependencies
+3. **Confirm Execution**: Clarify scope and parameters with user
+4. **Execute Workflow**: Follow phase-by-phase execution plan
+
+### Progress Communication
+1. **Phase Announcements**: Clearly indicate current execution phase
+2. **Progress Updates**: Provide status updates for long-running operations
+3. **Completion Summaries**: Summarize results and next steps
+4. **Error Reporting**: Clear error messages with resolution guidance
+
+### Result Presentation
+1. **Structured Output**: Present results in organized, actionable format
+2. **File Locations**: Clearly indicate where outputs are created
+3. **Success Metrics**: Report coverage, quality, and completion statistics
+4. **Recommendations**: Provide next steps and improvement suggestions
 
 ## Success Criteria
 
-A successful workflow execution should:
-1. Create all required documentation files
-2. Provide comprehensive API coverage (100% of discovered APIs documented)
-3. Generate actionable business and technical insights
-4. Maintain consistency across all documents
-5. Enable easy maintenance and updates
-6. Include validation summary with complete coverage statistics
-7. Provide workflow execution summary for transparency and auditability
+### Workflow 1 Success
+- Complete repository inventory generated
+- Accurate API detection across all repositories
+- Comprehensive technology stack analysis
+- Actionable CSV report with business insights
 
-## Workflow Extensibility
+### Workflow 2 Success
+- Complete API-to-repository mapping
+- Meaningful confidence level assignments
+- Clear next steps for each mapped API
+- Integration insights from Workflow 1 results
 
-This workflow is designed to be:
-- **Framework Agnostic**: Adaptable to different .NET patterns
-- **Template Driven**: Easy to customize documentation structure
-- **Tool Independent**: Can work with or without static analyzer
-- **Scalable**: Handles projects from small APIs to large enterprise systems
+### Workflow 3 Success
+- 100% API documentation coverage
+- Comprehensive security and business analysis
+- Consistent cross-reference documentation
+- Production-ready documentation assets
+- Validated execution summary with actionable insights
 
-## Usage Context
+## Extensibility and Customization
 
-This workflow is ideal for:
-- Legacy system documentation
-- API inventory and governance
-- Security audit preparation
-- Migration planning
-- Developer onboarding
-- Architecture review processes
+### Framework Adaptability
+- Support for different .NET patterns and versions
+- Extensible analysis patterns for new frameworks
+- Configurable detection rules and criteria
+- Scalable architecture for enterprise requirements
+
+### Template Customization
+- Organization-specific documentation templates
+- Custom security assessment criteria
+- Business-specific analysis patterns
+- Branded documentation themes
+
+### Integration Capabilities
+- CI/CD pipeline integration potential
+- Enterprise governance tool compatibility
+- API management platform integration
+- Security scanning tool coordination

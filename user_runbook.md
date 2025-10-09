@@ -2,16 +2,21 @@
 
 ## Overview
 
-The .NET Documentation Wizard is an automated workflow that generates comprehensive documentation for any .NET codebase. It creates business overviews, technical specifications, API inventories, and detailed API documentation.
+The .NET Documentation Wizard provides three specialized workflows for comprehensive API analysis and documentation across multiple repositories. Each workflow serves a specific purpose in the API discovery and documentation pipeline.
 
-## What You Get
+## Available Workflows
 
-After running this workflow, you'll have a complete `analysis/` folder containing:
+### 🔍 Workflow 1: Find Repositories with APIs
+**Purpose**: Scan all repositories to identify which ones contain API definitions
+**Output**: `reports/repositories_with_apis.csv` - Complete inventory of repositories with API analysis
 
-- **📊 01_overview.md** - Business context and domain overview with diagrams
-- **🏗️ 02_technical_details.md** - Technical architecture and implementation details
-- **📋 03_api_inventory.csv** - Complete API inventory with unique identifiers
-- **📁 apis/** - Individual documentation files for each API endpoint
+### 🗺️ Workflow 2: Map Known APIs to Repositories
+**Purpose**: Map a list of known APIs to specific repositories and locations
+**Output**: `reports/api_to_repository_mapping.csv` - API-to-repository mapping with confidence levels
+
+### 📚 Workflow 3: Detailed Repository Analysis
+**Purpose**: Generate comprehensive documentation for a specific repository
+**Output**: Complete `analysis/` folder with business overviews, technical details, API inventory, and individual API documentation
 
 ## Prerequisites
 
@@ -29,186 +34,309 @@ After running this workflow, you'll have a complete `analysis/` folder containin
 - ✅ Traditional Web API projects
 - ✅ Mixed architectures with multiple patterns
 
-## How to Use
+## How to Use Each Workflow
 
-### Step 1: Navigate to Your Repository
+### 🔍 Workflow 1: Find Repositories with APIs
 
-Open your .NET project repository in VS Code. The workflow works with any .NET codebase structure.
+**When to Use**: When you need to understand which repositories in your `repositories/` folder contain APIs
 
-### Step 2: Trigger the Workflow
-
-Use one of these methods to start the documentation generation:
-
-#### Method A: Chat Command
-In the Copilot chat, type:
+#### Trigger Commands
 ```
-Generate comprehensive documentation for this .NET codebase using the documentation wizard workflow
+Find all repositories with APIs in the repositories folder
 ```
-
-#### Method B: Specific Path
-If you want to analyze a specific path within your repository:
 ```
-Run the .NET documentation wizard on the path: ./src/MyApi
+Scan repositories for API definitions using Workflow 1
+```
+```
+Run repository API discovery workflow
 ```
 
-#### Method C: Full Repository Analysis
-To analyze the entire repository:
+**What Happens**:
+1. Scans all folders in `repositories/`
+2. Identifies .NET projects with API definitions
+3. Analyzes mono-repo structures
+4. Creates `reports/repositories_with_apis.csv`
+
+**Expected Output**:
 ```
-Create complete documentation for this .NET repository
-```
-
-### Step 3: Provide Repository Information
-
-The wizard will ask you to confirm:
-- **Repository path** - The root path of your .NET project
-- **Project name** - Used for file naming and organization
-
-Example interaction:
-```
-Copilot: I'll analyze your .NET codebase. Please confirm:
-- Repository path: /Users/yourname/projects/MyApp
-- Project name: MyApp
-
-Would you like me to proceed with the analysis?
+reports/
+└── repositories_with_apis.csv    # Repository inventory with API analysis
 ```
 
-### Step 4: Monitor Progress
+---
 
-The workflow runs in several phases:
+### 🗺️ Workflow 2: Map Known APIs to Repositories
 
-1. **🔍 Endpoint Extraction** - Scans codebase for API patterns
-2. **📊 Business Analysis** - Identifies domains and capabilities
-3. **🏗️ Technical Analysis** - Documents architecture and patterns
-4. **📋 Inventory Creation** - Catalogs all APIs with unique codes
-5. **📁 API Documentation** - Creates detailed specs for each endpoint
+**When to Use**: When you have a list of known APIs and need to find where they're implemented
 
-### Step 5: Review Generated Documentation
+#### Prerequisites
+- Provide a list of APIs in CSV, Excel, or Markdown format
+- Workflow 1 must be completed (requires `repositories_with_apis.csv`)
 
-Once complete, you'll find:
-
+#### Trigger Commands
 ```
-your-repository/
+Map known APIs to repositories using my API list: [path/to/api-list.csv]
+```
+```
+Run API mapping workflow with the provided API inventory
+```
+```
+Execute Workflow 2 to map APIs to repositories
+```
+
+**What Happens**:
+1. Processes your API list
+2. Matches APIs to repositories using intelligent algorithms
+3. Assigns confidence levels to matches
+4. Creates `reports/api_to_repository_mapping.csv`
+
+**Expected Output**:
+```
+reports/
+├── repositories_with_apis.csv        # From Workflow 1
+└── api_to_repository_mapping.csv     # New mapping report
+```
+
+---
+
+### 📚 Workflow 3: Detailed Repository Analysis
+
+**When to Use**: When you need comprehensive documentation for a specific repository
+
+#### Prerequisites (Optional)
+- Results from Workflows 1 & 2 for enhanced context
+- Specific repository path for analysis
+
+#### Trigger Commands
+```
+Generate comprehensive documentation for this repository using Workflow 3
+```
+```
+Run detailed analysis workflow on repository: [path/to/repository]
+```
+```
+Create complete API documentation for this .NET codebase
+```
+```
+Execute Workflow 3 detailed analysis on [repository-name]
+```
+
+**What Happens**:
+1. Extracts endpoints using static analyzer
+2. Generates business and technical overviews
+3. Creates comprehensive API inventory
+4. Documents each API with security analysis
+5. Performs OWASP security assessment
+6. Creates navigable documentation website
+
+**Expected Output**:
+```
+target-repository/
 ├── analysis/
-│   ├── 01_overview.md           # Business overview
-│   ├── 02_technical_details.md  # Technical architecture
-│   ├── 03_api_inventory.csv     # API inventory
-│   └── apis/                    # Individual API docs
-│       ├── myapp-api-00001.md
-│       ├── myapp-api-00002.md
+│   ├── 01_overview.md                    # Business overview
+│   ├── 02_technical_details.md           # Technical architecture
+│   ├── 03_api_inventory.csv              # API inventory
+│   ├── 04_sensitive_data_apis.md         # Sensitive data analysis
+│   ├── 05_business_critical_journeys.md  # Business journey analysis
+│   ├── workflow_execution_summary.md     # Execution report
+│   └── apis/                             # Individual API docs
+│       ├── {project}-api-00001.md
+│       ├── {project}-api-00002.md
 │       └── ...
+```
+
+## Common Workflow Patterns
+
+### Sequential Analysis Pattern
+For comprehensive API landscape understanding:
+1. **Start with Workflow 1**: Get overview of all repositories
+2. **Use Workflow 2**: Map known APIs to repositories
+3. **Execute Workflow 3**: Generate detailed documentation for priority repositories
+
+### Focused Analysis Pattern
+For specific repository documentation:
+- **Jump to Workflow 3**: If you know exactly which repository to analyze
+
+### API Discovery Pattern
+For API inventory and mapping:
+1. **Run Workflow 1**: Discover API-containing repositories
+2. **Use Workflow 2**: Map external API lists to discovered repositories
+
+## Example Trigger Scenarios
+
+### Scenario 1: New Enterprise Environment
+```
+Find all repositories with APIs in the repositories folder
+```
+*Follow up after Workflow 1 completes:*
+```
+Map known APIs to repositories using my API list: ./known_apis.csv
+```
+
+### Scenario 2: Legacy System Documentation
+```
+Generate comprehensive documentation for this repository using Workflow 3
+```
+
+### Scenario 3: API Compliance Audit
+```
+Run repository API discovery workflow
+```
+*Then for each high-priority repository:*
+```
+Execute Workflow 3 detailed analysis on [repository-name]
 ```
 
 ## Expected Output Examples
 
-### Business Overview (01_overview.md)
-- Product purpose and value proposition
-- Business domain identification
-- Stakeholder analysis
-- Domain diagrams using Mermaid
-- Key business capabilities
-
-### Technical Details (02_technical_details.md)
-- Architecture patterns (Clean Architecture, MVC, etc.)
-- Technology stack and frameworks
-- Security approaches and patterns
-- Database design and data flow
-- System integration points
-
-### API Inventory (03_api_inventory.csv)
+### Workflow 1: repositories_with_apis.csv
 ```csv
-Code,Method,Endpoint,Controller,Purpose,Access Level,Domain,File Path,Line Number
-myapp-api-00001,GET,/api/products,ProductsController,List all products,External,Catalog,src/Controllers/ProductsController.cs,25
-myapp-api-00002,POST,/api/products,ProductsController,Create new product,Internal,Catalog,src/Controllers/ProductsController.cs,45
+Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Technology Stack,Mono Repo Structure,Notes
+eShopOnWeb-main,Yes,Mono Repo,E-commerce web application,src/PublicApi/Controllers/,...,.NET 8 ASP.NET Core,PublicApi;Web;BlazorAdmin,Clean Architecture
+MyLibrary,No,Library,Utility library for data processing,N/A,.NET Standard 2.0,N/A,No API endpoints found
 ```
 
-### Individual API Documentation (apis/myapp-api-00001.md)
-- Detailed endpoint specification
-- Request/response examples
-- Authentication requirements
-- Error handling scenarios
-- Code citations with file paths and line numbers
+### Workflow 2: api_to_repository_mapping.csv
+```csv
+API Name,API Description,Probable Repository,Confidence Level,Matching Criteria,Potential Location,Service/Application,Technology Match,Notes,Recommendation
+Catalog API,Product search and filtering,eShopOnWeb-main/src/PublicApi,High,Name + Domain + Technology,src/PublicApi/Controllers/CatalogController.cs,PublicApi,Perfect - ASP.NET Core Web API,Multiple catalog endpoints found,High priority for Workflow 3
+```
+
+### Workflow 3: Complete Analysis Folder
+```
+target-repository/
+├── analysis/
+│   ├── 01_overview.md                    # Business context and domain analysis
+│   ├── 02_technical_details.md           # Architecture and technical patterns
+│   ├── 03_api_inventory.csv              # Complete API catalog
+│   ├── 04_sensitive_data_apis.md         # Sensitive data handling analysis
+│   ├── 05_business_critical_journeys.md  # Business workflow analysis
+│   ├── workflow_execution_summary.md     # Comprehensive execution report
+│   └── apis/                             # Individual API documentation
+│       ├── myapp-api-00001.md            # Detailed API specifications
+│       ├── myapp-api-00002.md            # With OWASP security assessment
+│       └── ...
+```
 
 ## Troubleshooting
 
-### Common Issues
+### Common Issues by Workflow
 
-#### "ripgrep not found"
+#### Workflow 1 Issues
+**"No repositories found in repositories folder"**
+- Ensure repositories are placed in the `repositories/` folder
+- Check folder permissions and access rights
+- Verify folder structure is correct
+
+**"Repository scanning failed"**
+- Some repositories may be corrupted or incomplete
+- Check individual repository access permissions
+- Review the CSV output for specific error details
+
+#### Workflow 2 Issues
+**"Workflow 1 output not found"**
+- Ensure Workflow 1 has been completed successfully
+- Check that `reports/repositories_with_apis.csv` exists
+- Run Workflow 1 first before attempting Workflow 2
+
+**"API list format not recognized"**
+- Ensure your API list is in CSV, Excel, or Markdown format
+- Check that required columns are present
+- Verify file path is accessible
+
+**"Low confidence matches"**
+- Review repository summaries from Workflow 1
+- Consider providing more detailed API descriptions
+- Manual validation may be required for ambiguous matches
+
+#### Workflow 3 Issues
+**"ripgrep not found"**
 ```bash
 # Install ripgrep
 brew install ripgrep  # macOS
 sudo apt install ripgrep  # Linux
 ```
 
-#### "No endpoints found"
-- Verify you're in a .NET project directory
+**"No endpoints found"**
+- Verify you're targeting a .NET project directory
 - Check that the project contains API controllers or minimal API definitions
 - Ensure the project builds successfully
 
-#### "Analysis folder creation failed"
+**"Analysis folder creation failed"**
 - Check write permissions in the repository directory
 - Ensure sufficient disk space
-- Verify the path exists and is accessible
+- Verify the target repository path exists and is accessible
 
 ### Getting Help
 
 If you encounter issues:
 
-1. **Check Prerequisites** - Ensure ripgrep is installed and accessible
-2. **Verify Project Structure** - Confirm you're in a valid .NET project
-3. **Review Logs** - Check the Copilot chat for error messages
-4. **Manual Fallback** - The workflow can analyze projects without ripgrep (slower but functional)
+1. **Check Prerequisites** - Ensure all required tools are installed
+2. **Verify Project Structure** - Confirm target repositories are valid .NET projects
+3. **Review Workflow Dependencies** - Ensure previous workflows are completed when required
+4. **Check Logs** - Review Copilot chat for specific error messages
+5. **Manual Fallback** - Workflows can handle various fallback scenarios
 
-## Customization Options
+## Workflow-Specific Customization
 
-### Analyzing Specific Subdirectories
+### Workflow 1 Customization
 ```
-Run the documentation wizard on just the API layer: ./src/WebApi
+Find repositories with APIs in the repositories folder, focusing on microservices architecture
 ```
-
-### Focusing on Specific Domains
 ```
-Generate documentation focused on the catalog and ordering domains
+Scan repositories for API definitions and include security framework analysis
 ```
 
-### Adding Business Context
+### Workflow 2 Customization
 ```
-Include information about user roles and business processes in the documentation
+Map known APIs to repositories with emphasis on financial services APIs
+```
+```
+Execute Workflow 2 with high-confidence matching only
+```
+
+### Workflow 3 Customization
+```
+Generate comprehensive documentation with focus on GDPR compliance analysis
+```
+```
+Run detailed analysis with emphasis on security patterns and authentication
 ```
 
 ## Best Practices
 
-### Before Running
-- Ensure your codebase is in a clean state
-- Review any existing documentation to avoid conflicts
-- Consider running on a specific branch if needed
+### Workflow Selection Strategy
+- **Start with Workflow 1** for new environments or comprehensive discovery
+- **Use Workflow 2** when you have existing API inventories to map
+- **Apply Workflow 3** for detailed documentation of priority repositories
 
-### After Generation
-- Review the generated documentation for accuracy
-- Add business-specific context where needed
-- Update API classifications (internal/external) as appropriate
-- Consider version controlling the analysis folder
+### Sequential Execution
+- Allow each workflow to complete before starting the next
+- Review outputs between workflows to guide next steps
+- Use results from earlier workflows to prioritize later analyses
 
-### Maintenance
-- Re-run the workflow after significant API changes
-- Update business context as the product evolves
-- Use the inventory for API governance and security reviews
+### Data Management
+- Version control the `reports/` folder for tracking changes over time
+- Maintain backup copies of API lists and mapping results
+- Consider archiving old analysis folders before re-running Workflow 3
 
-## Advanced Usage
+## Advanced Usage Patterns
 
-### Integration with CI/CD
-The workflow can be integrated into development pipelines:
-```bash
-# Example pipeline step
-- name: Generate API Documentation
-  run: |
-    copilot analyze-dotnet-apis --path ./src --output ./docs/analysis
-```
+### Enterprise API Governance
+1. **Discovery Phase**: Run Workflow 1 across all repositories
+2. **Mapping Phase**: Use Workflow 2 to align with business API registry
+3. **Documentation Phase**: Execute Workflow 3 on business-critical repositories
+4. **Maintenance Phase**: Re-run workflows periodically for updates
 
-### Custom Templates
-The workflow supports customization of documentation templates for organization-specific needs.
+### Security Audit Preparation
+1. **Repository Inventory**: Use Workflow 1 to identify all API-containing repositories
+2. **Critical API Identification**: Apply Workflow 2 to map high-risk APIs
+3. **Detailed Security Analysis**: Run Workflow 3 with focus on OWASP assessment
 
-### Multi-Repository Analysis
-For microservice architectures, run the workflow on each service repository to maintain consistent documentation across services.
+### Migration Planning
+1. **Current State Analysis**: Use all three workflows to document existing landscape
+2. **Dependency Mapping**: Leverage business journey analysis from Workflow 3
+3. **Priority Assessment**: Use confidence levels and security ratings for planning
 
 ## Support
 

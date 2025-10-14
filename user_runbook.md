@@ -14,9 +14,17 @@ The .NET Documentation Wizard provides three specialized workflows for comprehen
 **Purpose**: Map a list of known APIs to specific repositories and locations
 **Output**: `reports/api_to_repository_mapping.csv` - API-to-repository mapping with confidence levels
 
-### 📚 Workflow 3: Detailed Repository Analysis
-**Purpose**: Generate comprehensive documentation for a specific repository
-**Output**: Complete `analysis/` folder with business overviews, technical details, API inventory, and individual API documentation
+### 📋 Workflow 3: API/Endpoint Inventory Creation
+**Purpose**: Create comprehensive endpoint inventory for ANY repository (ALL endpoint types)
+**Output**: `{wizard_root}/analysis/{repo}/{sub_repo}/endpoint_inventory.csv` - Complete endpoint catalog
+
+### 📚 Workflow 4: Detailed Endpoint Documentation
+**Purpose**: Document every endpoint from inventory CSV with validation and gap detection
+**Output**: `{wizard_root}/analysis/{repo}/{sub_repo}/endpoints/*.md` + `missed_endpoints.csv` if gaps found
+
+### 🔍 Workflow 5: Repository Analysis
+**Purpose**: Business and technical analysis with granular options (individual or combined)
+**Output**: Selected analysis files: overview, technical details, security analysis, business journey mapping
 
 ## Prerequisites
 
@@ -104,68 +112,178 @@ reports/
 
 ---
 
-### 📚 Workflow 3: Detailed Repository Analysis
+### 📋 Workflow 3: API/Endpoint Inventory Creation
 
-**When to Use**: When you need comprehensive documentation for a specific repository
+**When to Use**: When you need comprehensive endpoint discovery for any repository
 
-#### Prerequisites (Optional)
-- Results from Workflows 1 & 2 for enhanced context
-- Specific repository path for analysis
+#### Prerequisites
+- Target repository path
+- Repository should contain .NET projects
 
 #### Trigger Commands
 ```
-Generate comprehensive documentation for this repository using Workflow 3
+Create endpoint inventory for repository: [repo-name]
 ```
 ```
-Run detailed analysis workflow on repository: [path/to/repository]
+Generate comprehensive endpoint inventory using Workflow 3
 ```
 ```
-Create complete API documentation for this .NET codebase
+Execute endpoint discovery workflow for [repo-name]/[sub-project]
 ```
 ```
-Execute Workflow 3 detailed analysis on [repository-name]
+Extract all endpoints from [repository-name]
 ```
 
 **What Happens**:
-1. Extracts endpoints using static analyzer
-2. Generates business and technical overviews
-3. Creates comprehensive API inventory
-4. Documents each API with security analysis
-5. Performs OWASP security assessment
-6. Creates navigable documentation website
+1. **Comprehensive endpoint discovery** (ALL types: REST APIs, WebForms, WCF, ASMX, etc.)
+2. **Advanced pattern detection** including legacy ASP.NET WebForms
+3. **Accurate classification** of endpoint types
+4. **Precise location tracking** with file paths and line numbers
+5. Creates `endpoint_inventory.csv`
 
 **Expected Output**:
 ```
-target-repository/
-├── analysis/
-│   ├── 01_overview.md                    # Business overview
-│   ├── 02_technical_details.md           # Technical architecture
-│   ├── 03_api_inventory.csv              # API inventory
-│   ├── 04_sensitive_data_apis.md         # Sensitive data analysis
-│   ├── 05_business_critical_journeys.md  # Business journey analysis
-│   ├── workflow_execution_summary.md     # Execution report
-│   └── apis/                             # Individual API docs
-│       ├── {project}-api-00001.md
-│       ├── {project}-api-00002.md
-│       └── ...
+{wizard_root}/analysis/{repo_name}/{sub_repo}/
+└── endpoint_inventory.csv    # Complete endpoint catalog
+```
+
+---
+
+### 📚 Workflow 4: Detailed Endpoint Documentation
+
+**When to Use**: When you have endpoint inventory and need comprehensive documentation
+
+#### Prerequisites
+- `endpoint_inventory.csv` from Workflow 3
+- Access to source repository
+
+#### Trigger Commands
+```
+Document all endpoints from inventory for [repo-name]
+```
+```
+Execute endpoint documentation workflow 4 for [repo-name]/[sub-project]
+```
+```
+Generate comprehensive endpoint docs using Workflow 4
+```
+```
+Create detailed documentation for all endpoints in CSV
+```
+
+**What Happens**:
+1. **Processes endpoint inventory CSV** from Workflow 3
+2. **Documents ALL endpoint types** (REST, WebForms, WCF, etc.)
+3. **Validates 100% coverage** and finds gaps
+4. **Creates missed_endpoints.csv** if gaps discovered during validation
+5. Generates individual documentation files
+
+**Expected Output**:
+```
+{wizard_root}/analysis/{repo_name}/{sub_repo}/
+├── endpoints/                      # Individual endpoint docs
+│   ├── {repo}-endpoint-00001.md
+│   ├── {repo}-endpoint-00002.md
+│   └── ...
+└── missed_endpoints.csv           # Gaps found during validation (if any)
+```
+
+---
+
+### 🔍 Workflow 5: Repository Analysis
+
+**When to Use**: When you need business/technical analysis with granular control
+
+#### Prerequisites (Optional)
+- Repository path for analysis
+- Can be enhanced with endpoint inventory
+
+#### Granular Trigger Commands
+```
+Run overview only analysis for [repo-name]
+```
+```
+Execute technical details only for [repo-name]/[sub-project]
+```
+```
+Generate sensitive data analysis only for [repo-name]
+```
+```
+Create business journey analysis only for [repo-name]
+```
+```
+Perform all analysis for [repo-name]
+```
+
+**What Happens**:
+Based on your command, creates one or more of:
+1. **Business overview** (01_overview.md)
+2. **Technical architecture** (02_technical_details.md)
+3. **Security/sensitive data analysis** (03_sensitive_data_analysis.md)
+4. **Business journey mapping** (04_business_critical_journeys.md)
+
+**Expected Output**:
+```
+{wizard_root}/analysis/{repo_name}/{sub_repo}/
+├── 01_overview.md                      # If "overview only" or "all analysis"
+├── 02_technical_details.md             # If "technical only" or "all analysis"
+├── 03_sensitive_data_analysis.md       # If "sensitive data only" or "all analysis"
+├── 04_business_critical_journeys.md    # If "business journey only" or "all analysis"
+└── analysis_execution_summary.md       # Summary of completed analyses
 ```
 
 ## Common Workflow Patterns
 
-### Sequential Analysis Pattern
-For comprehensive API landscape understanding:
-1. **Start with Workflow 1**: Get overview of all repositories
-2. **Use Workflow 2**: Map known APIs to repositories
-3. **Execute Workflow 3**: Generate detailed documentation for priority repositories
+### Complete Analysis Pattern (Recommended)
+For comprehensive endpoint analysis and documentation:
+1. **Workflow 1** → Discover all repositories with APIs
+2. **Workflow 3** → Create endpoint inventory for priority repositories
+3. **Workflow 4** → Document all endpoints from inventory
+4. **Workflow 5** → Generate business and technical analysis
 
-### Focused Analysis Pattern
-For specific repository documentation:
-- **Jump to Workflow 3**: If you know exactly which repository to analyze
+### Targeted Documentation Pattern
+For specific repository endpoint documentation:
+1. **Workflow 3** → Create endpoint inventory for target repository
+2. **Workflow 4** → Document all endpoints with validation
+3. **Workflow 5** → Add business analysis (optional)
 
-### API Discovery Pattern
-For API inventory and mapping:
-1. **Run Workflow 1**: Discover API-containing repositories
-2. **Use Workflow 2**: Map external API lists to discovered repositories
+### API Mapping Pattern
+For mapping known APIs to repositories:
+1. **Workflow 1** → Discover repositories with APIs
+2. **Workflow 2** → Map known API list to repositories
+3. **Workflow 3** → Create inventory for mapped repositories
+
+### Granular Analysis Pattern
+For specific analysis needs:
+- **Workflow 5** → Run only needed analysis ("overview only", "technical only", etc.)
+
+## Centralized Analysis Structure
+
+All workflows now create analysis files in a centralized structure:
+
+```
+dotnet_documentation_wizard/
+├── analysis/                           # Centralized analysis folder
+│   ├── eShopOnWeb-main/               # Repository-specific analysis
+│   │   ├── PublicApi/                 # Sub-project analysis
+│   │   │   ├── endpoint_inventory.csv
+│   │   │   ├── endpoints/
+│   │   │   ├── 01_overview.md
+│   │   │   └── ...
+│   │   ├── Web/                       # Another sub-project
+│   │   └── BlazorAdmin/
+│   └── AnotherRepository/
+│       ├── endpoint_inventory.csv
+│       └── endpoints/
+├── reports/                           # Workflow 1 & 2 outputs
+└── repositories/                      # Source repositories
+```
+
+This structure allows:
+- **Multiple repository analysis** without conflicts
+- **Mono-repo sub-project separation**
+- **Easy comparison** across repositories
+- **Organized documentation** management
 
 ## Example Trigger Scenarios
 

@@ -2,31 +2,56 @@
 
 ## Overview
 
-The .NET Documentation Wizard provides three specialized workflows for enterprise-scale API discovery, mapping, and documentation. Each workflow serves a specific purpose in the comprehensive API analysis pipeline.
+The .NET Documentation Wizard provides five specialized workflows for enterprise-scale API discovery, mapping, documentation, and analysis. Each workflow serves a specific purpose in the comprehensive API analysis pipeline, supporting universal endpoint types and optimized for large codebases (20-30M LOC across 60-70 repositories).
 
-## Available Workflows
+## Five-Workflow Architecture
 
-### 🔍 Workflow 1: Find Repositories with APIs
-**Purpose**: Scan all repositories to identify which ones contain API definitions
-**Trigger Patterns**: "Find all repositories with APIs", "Scan repositories for API definitions", "Run repository API discovery"
+### 🔍 Workflow 1: Repository Discovery and API Identification
+**Purpose**: Enterprise-scale repository scanning to identify which repositories contain API definitions
+**Trigger Patterns**: "Find all repositories with APIs", "Scan repositories for API definitions", "Run repository API discovery", "Identify which repositories contain APIs"
 **Output**: `reports/repositories_with_apis.csv`
+**Efficiency**: Optimized for 20-30M LOC using Windows PowerShell commands
 
-### 🗺️ Workflow 2: Map Known APIs to Repositories
-**Purpose**: Map provided API lists to specific repositories and locations
-**Trigger Patterns**: "Map known APIs to repositories", "Run API mapping workflow", "Execute Workflow 2"
+### 🗺️ Workflow 2: Intelligent API-to-Repository Mapping
+**Purpose**: Map known API lists to specific repositories using intelligent matching algorithms
+**Trigger Patterns**: "Map known APIs to repositories using my API list: [file]", "Run API mapping workflow", "Execute Workflow 2", "Match APIs to repositories"
 **Output**: `reports/api_to_repository_mapping.csv`
+**Dependencies**: Requires Workflow 1 output
 
-### 📚 Workflow 3: Detailed Repository Analysis
-**Purpose**: Generate comprehensive documentation for a specific repository
-**Trigger Patterns**: "Generate comprehensive documentation", "Run detailed analysis", "Execute Workflow 3"
-**Output**: Complete `analysis/` folder with comprehensive documentation
+### 📋 Workflow 3: Comprehensive Endpoint Inventory Creation
+**Purpose**: Create complete endpoint inventory for ANY repository (ALL endpoint types)
+**Trigger Patterns**: "Create endpoint inventory for repository: [repo]", "Generate comprehensive endpoint inventory", "Execute endpoint discovery workflow", "Extract all endpoints"
+**Output**: `{wizard_root}/analysis/{repo}/{sub_repo}/endpoint_inventory.csv`
+**Coverage**: REST APIs, ASP.NET WebForms, WCF Services, ASMX, Handlers, SignalR
+
+### 📚 Workflow 4: Universal Endpoint Documentation
+**Purpose**: Document every endpoint from inventory CSV with validation and gap detection
+**Trigger Patterns**: "Document all endpoints from inventory", "Execute endpoint documentation workflow 4", "Generate comprehensive endpoint docs", "Create detailed documentation for all endpoints"
+**Output**: `{wizard_root}/analysis/{repo}/{sub_repo}/endpoints/*.md` + `missed_endpoints.csv`
+**Dependencies**: Requires Workflow 3 output (endpoint_inventory.csv)
+
+### 🔍 Workflow 5: Granular Repository Analysis
+**Purpose**: Business and technical analysis with granular execution options
+**Trigger Patterns**: "Run overview only analysis", "Execute technical details only", "Generate sensitive data analysis only", "Create business journey analysis only", "Perform all analysis"
+**Output**: Selected analysis files: `01_overview.md`, `02_technical_details.md`, `03_sensitive_data_analysis.md`, `04_business_critical_journeys.md`
+**Flexibility**: Individual or combined analysis options
 
 ## Workflow Selection Logic
 
 When user requests include:
 - **"find", "scan", "discover" + "repositories"** → Execute Workflow 1
 - **"map", "match", "align" + "API" + "repositories"** → Execute Workflow 2
-- **"documentation", "analyze", "detailed" + specific repository** → Execute Workflow 3
+- **"endpoint inventory", "create endpoint inventory", "extract endpoints"** → Execute Workflow 3
+- **"document endpoints", "endpoint documentation", "workflow 4"** → Execute Workflow 4
+- **"overview only", "technical details only", "sensitive data only", "business journey only", "all analysis"** → Execute Workflow 5
+
+## Workflow Dependencies
+
+- **Workflow 1**: Standalone (no dependencies)
+- **Workflow 2**: Requires Workflow 1 output (`repositories_with_apis.csv`)
+- **Workflow 3**: Standalone (optional enhancement from Workflows 1 & 2)
+- **Workflow 4**: Requires Workflow 3 output (`endpoint_inventory.csv`)
+- **Workflow 5**: Standalone (optional enhancement from endpoint inventory)
 
 ## Core Principles
 
@@ -238,68 +263,134 @@ API Name,API Description,Probable Repository,Confidence Level,Matching Criteria,
 
 ---
 
-# 📚 WORKFLOW 3: DETAILED REPOSITORY ANALYSIS
+# 📋 WORKFLOW 3: COMPREHENSIVE ENDPOINT INVENTORY CREATION
 
 ## Execution Trigger Recognition
 
 ### Primary Triggers
-- "Generate comprehensive documentation for this repository using Workflow 3"
-- "Run detailed analysis workflow on repository: [path]"
-- "Create complete API documentation for this .NET codebase"
-- "Execute Workflow 3 detailed analysis on [repository-name]"
+- "Create endpoint inventory for repository: [repo-name]"
+- "Generate comprehensive endpoint inventory using Workflow 3"
+- "Execute endpoint discovery workflow for [repo-name]/[sub-project]"
+- "Extract all endpoints from [repository-name]"
 
-### Context Enhancement
-- Use results from Workflows 1 & 2 if available for enhanced context
-- Accept specific repository paths or work with current directory
-- Leverage previous analysis for focused documentation
+### Universal Endpoint Support
+- **REST APIs**: MVC Controllers, Web API Controllers, Minimal APIs
+- **ASP.NET WebForms**: ASPX pages, code-behind methods, user controls, master pages
+- **WCF Services**: Service contracts, operation contracts, SVC files
+- **Legacy Services**: ASMX web services, WebMethods
+- **HTTP Handlers**: ASHX generic handlers, custom HTTP handlers
+- **Modern Patterns**: SignalR Hubs, OData Controllers, GraphQL endpoints
 
 ## Execution Phases
 
-### Phase 1: Preparation and Validation
+### Phase 1: Repository Analysis Setup
 1. **Repository Path Validation**: Ensure target is valid .NET project
-2. **Static Endpoint Extraction**: Execute `static_dotnet_endpoint_extractor`
-3. **Analysis Folder Setup**: Create `analysis/` and `analysis/apis/` folders
-4. **Context Integration**: Incorporate insights from previous workflows
+2. **Analysis Folder Creation**: Create centralized `{wizard_root}/analysis/{repo}/{sub_repo}/` structure
+3. **Static Endpoint Extraction**: Execute optimized pattern detection
+4. **Multi-Type Detection**: Scan for all endpoint types simultaneously
 
-### Phase 2: Documentation Generation
-1. **Business Overview**: Generate `01_overview.md` with domain analysis
-2. **Technical Details**: Create `02_technical_details.md` with architecture documentation
-3. **API Inventory**: Generate `03_api_inventory.csv` with comprehensive API catalog
-4. **Individual APIs**: Create detailed documentation for each endpoint
+### Phase 2: Universal Endpoint Discovery
+1. **Advanced Pattern Detection**: Use Windows PowerShell or ripgrep for efficiency
+2. **Endpoint Classification**: Accurately classify all endpoint types
+3. **Location Tracking**: Precise file paths and line numbers
+4. **Metadata Extraction**: Gather endpoint parameters, methods, authentication
 
-### Phase 3: Security and Business Analysis
-1. **Sensitive Data Analysis**: Generate `04_sensitive_data_apis.md`
-2. **Business Journeys**: Create `05_business_critical_journeys.md`
-3. **OWASP Assessment**: Conduct security analysis for each API
-4. **Compliance Mapping**: Identify regulatory considerations
+### Phase 3: Inventory Generation
+1. **CSV Creation**: Generate comprehensive `endpoint_inventory.csv`
+2. **Data Validation**: Verify completeness and accuracy
+3. **Quality Assurance**: Ensure all endpoints are captured
+4. **Summary Reporting**: Provide endpoint discovery statistics
 
-### Phase 4: Validation and Finalization
-1. **Coverage Validation**: Ensure 100% API documentation coverage
-2. **Cross-Reference Verification**: Validate consistency across documents
-3. **Quality Assurance**: Verify template compliance and markdown syntax
-4. **Execution Summary**: Generate `workflow_execution_summary.md`
+### Advanced Pattern Detection (Windows Optimized)
+```powershell
+# Multi-type endpoint discovery
+Get-ChildItem "repositories\{repo}" -Recurse -Filter "*Controller.cs"  # REST APIs
+Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.aspx"          # WebForms
+Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.svc"           # WCF Services
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "\[WebMethod\]" -Recurse  # ASMX
 
-## Documentation Templates Integration
+# Cross-platform using ripgrep (recommended for large codebases)
+rg "class.*Controller|\.aspx|\.svc|\[WebMethod\]" "repositories\{repo}"
+```
 
-### Template Usage Guidelines
-- **01_overview_template.md**: Business and domain overview structure
-- **02_technical_details_template.md**: Technical architecture template
-- **individual_api_template.md**: Individual API documentation format
-- **workflow_execution_summary_template.md**: Execution summary structure
+# 📚 WORKFLOW 4: UNIVERSAL ENDPOINT DOCUMENTATION
 
-### Template Compliance Requirements
-- Follow exact section structures from templates
-- Maintain consistent formatting and terminology
-- Include all required sections and subsections
-- Use standardized code citation formats
+## Execution Trigger Recognition
 
-## Static Endpoint Extraction Integration
+### Primary Triggers
+- "Document all endpoints from inventory for [repo-name]"
+- "Execute endpoint documentation workflow 4 for [repo-name]/[sub-project]"
+- "Generate comprehensive endpoint docs using Workflow 4"
+- "Create detailed documentation for all endpoints in CSV"
 
-### Extractor Workflow (Workflow 3 Only)
-1. **Pre-Analysis**: Execute `static_dotnet_endpoint_extractor` script
-2. **Pattern Extraction**: Use optimized ripgrep queries for API pattern identification
-3. **Context Optimization**: Use pre-extracted data to preserve context for analysis
-4. **Fallback Handling**: Graceful degradation if extractor unavailable
+### Prerequisites
+- Requires `endpoint_inventory.csv` from Workflow 3
+- Access to source repository for code analysis
+
+## Execution Phases
+
+### Phase 1: Inventory Processing
+1. **CSV Validation**: Verify endpoint inventory completeness
+2. **Template Selection**: Choose appropriate templates for each endpoint type
+3. **Documentation Planning**: Organize documentation generation approach
+4. **Quality Setup**: Prepare validation and gap detection mechanisms
+
+### Phase 2: Universal Endpoint Documentation
+1. **Multi-Type Documentation**: Support ALL endpoint types with specific templates
+2. **Individual Documentation**: Create detailed `.md` files for each endpoint
+3. **Code Analysis**: Extract implementation details and security patterns
+4. **Business Context**: Map endpoints to business domains and journeys
+
+### Phase 3: Validation and Gap Detection
+1. **Coverage Validation**: Ensure 100% endpoint documentation
+2. **Gap Detection**: Identify missed endpoints during validation
+3. **Missed Endpoints CSV**: Create `missed_endpoints.csv` if gaps found
+4. **Quality Assurance**: Verify documentation completeness and accuracy
+
+### Multi-Type Template Support
+- **rest_api_endpoint_template.md**: HTTP methods, status codes, request/response examples
+- **webform_endpoint_template.md**: Page lifecycle, controls, postback behavior, ViewState
+- **wcf_service_endpoint_template.md**: Service contracts, SOAP operations, bindings
+- **asmx_service_endpoint_template.md**: WebMethods, XML schema, SOAP messages
+- **handler_endpoint_template.md**: HTTP processing, context handling
+- **generic_endpoint_template.md**: Fallback for unrecognized endpoint types
+
+# 🔍 WORKFLOW 5: GRANULAR REPOSITORY ANALYSIS
+
+## Execution Trigger Recognition
+
+### Granular Trigger Patterns
+- "Run overview only analysis for [repo-name]"
+- "Execute technical details only for [repo-name]/[sub-project]"
+- "Generate sensitive data analysis only for [repo-name]"
+- "Create business journey analysis only for [repo-name]"
+- "Perform all analysis for [repo-name]"
+
+### Individual Analysis Options
+1. **Business Overview** (`01_overview.md`) - Domain analysis and business context
+2. **Technical Details** (`02_technical_details.md`) - Architecture and technical patterns
+3. **Sensitive Data Analysis** (`03_sensitive_data_analysis.md`) - Security and compliance
+4. **Business Journey Mapping** (`04_business_critical_journeys.md`) - Workflow analysis
+
+## Execution Phases
+
+### Phase 1: Analysis Selection
+1. **Request Parsing**: Determine which analyses to perform
+2. **Dependency Check**: Verify repository access and optional enhancements
+3. **Template Selection**: Choose appropriate analysis templates
+4. **Context Integration**: Leverage endpoint inventory if available
+
+### Phase 2: Targeted Analysis Execution
+1. **Selected Analysis**: Execute only requested analysis types
+2. **Enhanced Context**: Use endpoint inventory for deeper insights
+3. **Quality Documentation**: Generate high-quality business and technical insights
+4. **Cross-Analysis Integration**: Ensure consistency and reference accuracy
+
+### Phase 3: Summary and Validation
+1. **Analysis Summary**: Create execution summary for completed analyses
+2. **Quality Validation**: Verify analysis completeness and accuracy
+3. **Integration Check**: Ensure cross-references are accurate
+4. **Completion Report**: Provide summary of what was analyzed
 
 ---
 
@@ -430,11 +521,22 @@ API Name,API Description,Probable Repository,Confidence Level,Matching Criteria,
 - Integration insights from Workflow 1 results
 
 ### Workflow 3 Success
-- 100% API documentation coverage
-- Comprehensive security and business analysis
-- Consistent cross-reference documentation
-- Production-ready documentation assets
-- Validated execution summary with actionable insights
+- Universal endpoint detection (REST, WebForms, WCF, ASMX, Handlers, etc.)
+- Accurate endpoint classification with precise location tracking
+- Comprehensive CSV inventory with all required metadata
+- Advanced pattern recognition for legacy and modern .NET applications
+
+### Workflow 4 Success
+- 100% endpoint documentation coverage from inventory CSV
+- Universal template system supporting all endpoint types
+- Validation process with gap detection and missed_endpoints.csv generation
+- Quality documentation with meaningful content and code citations
+
+### Workflow 5 Success
+- Granular analysis execution based on user selection
+- High-quality business and technical insights
+- Security and compliance analysis with OWASP assessment integration
+- Consistent cross-analysis integration and reference accuracy
 
 ## Extensibility and Customization
 

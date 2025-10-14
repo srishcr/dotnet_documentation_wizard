@@ -1,0 +1,6 @@
+Code,Endpoint_Type,HTTP_Method,Endpoint_Path,File_Path,Line_Number,Method_Name,Parameters,Authentication,Access_Level,Business_Domain,Framework_Version,Notes
+{repo}-endpoint-00001,REST API,GET,/api/products,src/Controllers/ProductsController.cs,25,GetProducts,"page:int,size:int",None,Public,Catalog,.NET 8,Paginated product listing
+{repo}-endpoint-00002,WebForm,POSTBACK,/Products.aspx,Pages/Products.aspx.cs,15,Page_Load,None,None,Public,Catalog,.NET Framework 4.8,Product display page
+{repo}-endpoint-00003,WCF Service,SOAP,/Services/ProductService.svc,Services/ProductService.svc.cs,20,GetProduct,"productId:int",BasicAuth,Internal,Catalog,.NET Framework 4.5,Legacy product service
+{repo}-endpoint-00004,ASMX Service,SOAP,/Services/LegacyService.asmx,Services/LegacyService.asmx.cs,12,GetData,"id:string",None,Public,Legacy,.NET Framework 2.0,Legacy web method
+{repo}-endpoint-00005,Handler,HTTP,/api/upload.ashx,Handlers/UploadHandler.ashx.cs,8,ProcessRequest,"context:HttpContext",None,Public,FileManagement,.NET Framework 4.0,File upload handler

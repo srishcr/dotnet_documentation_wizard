@@ -71,7 +71,7 @@ Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.cs" |
     Select-String -Pattern "namespace.*\.(Domain|Models|Entities)" -AllMatches
 
 # Entity model analysis for business understanding
-rg "class.*(Order|Product|User|Customer|Invoice)" "repositories\{repo}" --type cs
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "class.*(Order|Product|User|Customer|Invoice)" -Recurse
 
 # README analysis for business context
 Get-Content "repositories\{repo}\README.md" | Select-Object -First 50
@@ -92,17 +92,17 @@ Get-Content "repositories\{repo}\README.md" | Select-Object -First 50
 #### Key Analysis Areas
 ```powershell
 # Architecture pattern detection
-rg "IRepository|IService|IMapper|MediatR" "repositories\{repo}" --type cs
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "IRepository|IService|IMapper|MediatR" -Recurse
 
 # Technology stack analysis from project files
 Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.csproj" |
     ForEach-Object { Select-String -Path $_.FullName -Pattern "<PackageReference" }
 
 # Security pattern analysis
-rg "\[Authorize\]|Identity|JWT|OAuth" "repositories\{repo}" --type cs
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "\[Authorize\]|Identity|JWT|OAuth" -Recurse
 
 # Database and ORM patterns
-rg "DbContext|Entity.*Configuration|FromSql" "repositories\{repo}" --type cs
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "DbContext|Entity.*Configuration|FromSql" -Recurse
 ```
 
 ### 🔒 **Analysis 3: Sensitive Data Analysis (03_sensitive_data_analysis.md)**
@@ -120,28 +120,28 @@ rg "DbContext|Entity.*Configuration|FromSql" "repositories\{repo}" --type cs
 #### Sensitive Data Detection Patterns
 ```powershell
 # PII indicators
-rg "email|phone|address|ssn|passport|name.*first|name.*last" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "email|phone|address|ssn|passport|name.*first|name.*last" -Recurse -CaseSensitive:$false
 
 # Financial indicators
-rg "credit.*card|payment|billing|account.*number|transaction|balance" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "credit.*card|payment|billing|account.*number|transaction|balance" -Recurse -CaseSensitive:$false
 
 # Authentication indicators
-rg "password|token|secret|credential|private.*key" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "password|token|secret|credential|private.*key" -Recurse -CaseSensitive:$false
 
 # Confidential indicators
-rg "confidential|internal|private|admin.*only|classified" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "confidential|internal|private|admin.*only|classified" -Recurse -CaseSensitive:$false
 ```
 
 #### Security Pattern Analysis
 ```powershell
 # Encryption and hashing patterns
-rg "encrypt|decrypt|hash|salt|bcrypt|aes" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "encrypt|decrypt|hash|salt|bcrypt|aes" -Recurse -CaseSensitive:$false
 
 # Data protection implementation
-rg "DataProtection|IDataProtector|Protect\(|Unprotect\(" "repositories\{repo}" --type cs
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "DataProtection|IDataProtector|Protect\(|Unprotect\(" -Recurse
 
 # Input validation patterns
-rg "\[Required\]|\[StringLength\]|\[RegularExpression\]|ModelState\.IsValid" "repositories\{repo}" --type cs
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "\[Required\]|\[StringLength\]|\[RegularExpression\]|ModelState\.IsValid" -Recurse
 ```
 
 ### 🚀 **Analysis 4: Business Critical Journeys (04_business_critical_journeys.md)**
@@ -159,16 +159,16 @@ rg "\[Required\]|\[StringLength\]|\[RegularExpression\]|ModelState\.IsValid" "re
 #### Journey Identification Patterns
 ```powershell
 # Critical business operations
-rg "order|purchase|payment|checkout|registration|login" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "order|purchase|payment|checkout|registration|login" -Recurse -CaseSensitive:$false
 
 # Controller dependencies and workflow chains
-rg "redirect.*action|return.*view.*|await.*service\." "repositories\{repo}" --type cs
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "redirect.*action|return.*view.*|await.*service\." -Recurse
 
 # External integration points
-rg "httpclient|webclient|api.*client|third.*party" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "httpclient|webclient|api.*client|third.*party" -Recurse -CaseSensitive:$false
 
 # Transaction and unit of work patterns
-rg "transaction|commit|rollback|unit.*of.*work" "repositories\{repo}" --type cs -i
+Select-String -Path "repositories\{repo}\*.cs" -Pattern "transaction|commit|rollback|unit.*of.*work" -Recurse -CaseSensitive:$false
 ```
 
 ## Execution Framework

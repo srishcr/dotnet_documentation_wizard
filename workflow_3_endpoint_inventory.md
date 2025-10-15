@@ -15,9 +15,16 @@ This workflow creates a comprehensive endpoint inventory for any .NET repository
 
 Creates `{wizard_root}/analysis/{repo_name}/{sub_repo}/endpoint_inventory.csv`
 
-## Comprehensive Endpoint Detection
+## Multi-Layer Endpoint Discovery Architecture
 
-### 🎯 **All Endpoint Types Supported**
+### 🎯 **Three-Phase Discovery Approach**
+
+Modern .NET applications implement endpoints across multiple layers:
+1. **Physical Endpoints**: Discoverable files (traditional approach)
+2. **Virtual Endpoints**: Configuration-based routing (NEW)
+3. **Dynamic Endpoints**: Runtime-generated routes (ENHANCED)
+
+### **Phase 1: Physical File Detection (Traditional)**
 
 #### 1. **REST API Endpoints**
 - **MVC Controllers**: `*Controller.cs` files with `[HttpGet]`, `[HttpPost]`, etc.
@@ -46,6 +53,28 @@ Creates `{wizard_root}/analysis/{repo_name}/{sub_repo}/endpoint_inventory.csv`
 - **GraphQL Endpoints**: GraphQL schema definitions
 - **Custom HTTP Handlers**: `IHttpHandler` implementations
 
+### **Phase 2: Configuration-Based Discovery (NEW)**
+
+#### Virtual Endpoint Detection
+- **web.config URL Rewriting**: `<rewriteMap>`, `<urlMappings>` virtual paths
+- **Global.asax Routing**: `Application_BeginRequest`, `RewritePath` calls
+- **XML Configuration**: Custom configuration files with virtual directory mappings
+- **Route Attributes**: `[Route]` attributes creating virtual paths
+
+#### Framework-Specific Virtual Routes
+- **ASP.NET Core**: Startup.cs and Program.cs endpoint configurations
+- **MVC Routing**: RouteConfig.cs and controller conventions
+- **Web API Routing**: Attribute-based routing patterns
+- **Custom Frameworks**: Organization-specific routing mechanisms
+
+### **Phase 3: Dynamic Endpoint Analysis (ENHANCED)**
+
+#### Runtime-Generated Endpoints
+- **Dynamic Route Registration**: Endpoints registered at application startup
+- **Plugin-Based Endpoints**: Dynamically loaded modules with endpoints
+- **Convention-Based Routes**: Framework conventions creating implicit endpoints
+- **Reflection-Based Discovery**: Runtime type analysis for endpoint discovery
+
 ## Execution Steps
 
 ### Phase 1: Repository Analysis and Setup
@@ -64,7 +93,7 @@ Get-ChildItem "repositories\{repo_name}" -Recurse -Filter "*.csproj" -Depth 3
 New-Item -Path "analysis\{repo_name}\{sub_repo}" -ItemType Directory -Force
 ```
 
-### Phase 2: Comprehensive Endpoint Discovery
+### Phase 2A: Physical Endpoint Discovery (Traditional)
 
 #### REST API Detection
 ```powershell
@@ -75,8 +104,8 @@ Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "\[HttpGet\]|\[Http
 # Minimal APIs
 Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "app\.Map(Get|Post|Put|Delete|Patch)" -Recurse
 
-# Cross-platform using ripgrep (recommended)
-rg "class.*Controller|app\.Map(Get|Post)" "repositories\{repo_name}" --type cs
+# Alternative pattern detection
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "class.*Controller|app\.Map(Get|Post)" -Recurse
 ```
 
 #### WebForms Detection
@@ -92,8 +121,82 @@ Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "\[WebMethod\]" -Re
 # ASHX Handlers
 Get-ChildItem "repositories\{repo_name}" -Recurse -Filter "*.ashx"
 
-# Cross-platform
-rg "\[WebMethod\]|\.aspx|\.ascx|\.ashx" "repositories\{repo_name}"
+# Additional pattern detection
+Select-String -Path "repositories\{repo_name}\*" -Pattern "\[WebMethod\]" -Recurse -Include "*.cs"
+```
+
+### Phase 2B: Configuration-Based Discovery (NEW)
+
+#### web.config Analysis
+```powershell
+# Windows PowerShell
+Get-ChildItem "repositories\{repo_name}" -Recurse -Filter "web.config" | ForEach-Object {
+    Select-String -Path $_.FullName -Pattern "rewriteMap|urlMappings|httpHandlers|httpModules|virtualDirectory"
+}
+
+# URL Rewriting Rules
+Select-String -Path "repositories\{repo_name}\web.config" -Pattern "<rewrite>|<rules>|<rewriteMap>" -Recurse
+
+# Alternative XML pattern detection
+Select-String -Path "repositories\{repo_name}\*.xml","repositories\{repo_name}\*.config" -Pattern "rewriteMap|urlMappings|httpHandlers|virtualDirectory" -Recurse
+```
+
+#### Global.asax Routing Analysis
+```powershell
+# Windows PowerShell
+Select-String -Path "repositories\{repo_name}\Global.asax.cs" -Pattern "RewritePath|MapRoute|RegisterRoutes|Application_BeginRequest"
+
+# Route registration patterns
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "routes\.MapRoute|HttpContext\.Current\.RewritePath" -Recurse
+
+# Alternative C# pattern detection
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "RewritePath|MapRoute|RegisterRoutes|Application_BeginRequest" -Recurse
+```
+
+#### XML Configuration Files
+```powershell
+# Windows PowerShell
+Get-ChildItem "repositories\{repo_name}" -Recurse -Filter "*.xml" | ForEach-Object {
+    Select-String -Path $_.FullName -Pattern "virtualDirectory|serviceUrl|endpoint|route|mappedPath"
+}
+
+# Custom configuration patterns
+Select-String -Path "repositories\{repo_name}\*.config" -Pattern "virtualPath|physicalPath|urlMapping" -Recurse
+
+# Alternative XML configuration detection
+Select-String -Path "repositories\{repo_name}\*.xml","repositories\{repo_name}\*.config" -Pattern "virtualDirectory|serviceUrl|endpoint|route|mappedPath" -Recurse
+```
+
+#### Route Attribute Detection
+```powershell
+# Windows PowerShell
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "\[Route\(|app\.UseRouting|app\.UseEndpoints" -Recurse
+
+# Framework-specific routing
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "RouteConfig|MapRoute|UseRouting" -Recurse
+
+# Alternative route detection
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "\[Route\(|app\.UseRouting|app\.UseEndpoints|RouteConfig" -Recurse
+```
+
+### Phase 2C: Framework-Aware Discovery (ENHANCED)
+
+#### ASP.NET Core Routing
+```powershell
+# Startup.cs and Program.cs analysis
+Select-String -Path "repositories\{repo_name}\Startup.cs|repositories\{repo_name}\Program.cs" -Pattern "UseEndpoints|MapControllers|MapRazorPages|UseRouting"
+
+# Minimal API endpoints in Program.cs
+Select-String -Path "repositories\{repo_name}\Program.cs" -Pattern "app\.Map(Get|Post|Put|Delete|Patch)"
+```
+
+#### MVC Convention-Based Routes
+```powershell
+# RouteConfig.cs analysis
+Select-String -Path "repositories\{repo_name}\App_Start\RouteConfig.cs" -Pattern "routes\.MapRoute"
+
+# Controller action detection
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "public.*ActionResult|public.*IActionResult" -Recurse
 ```
 
 #### WCF and Legacy Services
@@ -105,40 +208,119 @@ Get-ChildItem "repositories\{repo_name}" -Recurse -Filter "*.svc"
 # ASMX Web Services
 Get-ChildItem "repositories\{repo_name}" -Recurse -Filter "*.asmx"
 
-# Cross-platform
-rg "\[ServiceContract\]|\.svc|\.asmx" "repositories\{repo_name}"
+# Alternative service detection
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "\[ServiceContract\]" -Recurse
 ```
 
-### Phase 3: Endpoint Analysis and Classification
+### Phase 3: Validation and Gap Detection (NEW)
 
-#### Endpoint Information Extraction
-For each discovered endpoint, extract:
-1. **Endpoint Path/URL**: Route, page name, or service address
-2. **HTTP Method**: GET, POST, PUT, DELETE, or WebForm postback
-3. **Endpoint Type**: REST API, WebForm, WCF Service, etc.
-4. **File Location**: Exact file path and line number
-5. **Method/Handler Name**: Specific method or event handler
-6. **Parameters**: Input parameters and data types
-7. **Authentication**: Authorization attributes or requirements
-
-#### Classification Logic
+#### Cross-Reference Validation
 ```powershell
-# Controller analysis for REST APIs
-Select-String -Path $controllerFile -Pattern "public.*Action.*\(" -AllMatches
+# Validate virtual endpoints have implementations
+ForEach ($virtualEndpoint in $virtualEndpoints) {
+    $physicalPath = $virtualEndpoint.PhysicalLocation
+    if (-not (Test-Path $physicalPath)) {
+        Write-Warning "Virtual endpoint $($virtualEndpoint.VirtualURL) references missing file: $physicalPath"
+    }
+}
 
-# WebForm page analysis
-Select-String -Path $aspxFile -Pattern "Page_Load|Button.*_Click" -AllMatches
-
-# Parameter extraction
-Select-String -Path $file -Pattern "\[FromBody\]|\[FromQuery\]|Request\.Form" -AllMatches
+# Check for orphaned configuration entries
+Select-String -Path "repositories\{repo_name}\web.config" -Pattern "virtualDirectory" | ForEach-Object {
+    # Validate referenced paths exist
+}
 ```
 
-### Phase 4: CSV Generation
+#### Gap Detection and Quality Assurance
+```powershell
+# Common endpoint patterns that should exist
+$commonPatterns = @(
+    "/api/health","/api/status","/favicon.ico","/robots.txt",
+    "/sitemap.xml","/web.config","/Global.asax"
+)
 
-#### CSV Structure: endpoint_inventory.csv
+# Check for standard framework endpoints
+$frameworkEndpoints = @(
+    "UseRouting","UseEndpoints","MapControllers","MapRazorPages"
+)
+
+# Detect potentially missed endpoints
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "public.*ActionResult|public.*IActionResult" -Recurse |
+    Where-Object { $_.Line -notmatch "Test|Mock|Sample" }
+```
+
+#### Confidence Scoring
+```powershell
+# Calculate discovery confidence based on:
+# 1. Physical endpoints found vs project complexity
+# 2. Configuration files analyzed
+# 3. Virtual endpoints detected
+# 4. Known patterns verified
+
+$physicalEndpoints = @($discoveredEndpoints | Where-Object { $_.DiscoveryMethod -eq "File_Scan" })
+$virtualEndpoints = @($discoveredEndpoints | Where-Object { $_.DiscoveryMethod -eq "Config_Analysis" })
+$totalComplexity = (Get-ChildItem "repositories\{repo_name}" -Recurse -Filter "*.cs").Count
+
+$confidenceScore = [Math]::Min(100, (($physicalEndpoints.Count + $virtualEndpoints.Count * 2) / $totalComplexity * 100))
+```
+
+### Phase 4: Enhanced Endpoint Analysis and Classification
+
+#### Multi-Source Information Extraction
+For each discovered endpoint, extract:
+1. **Virtual URL**: Publicly accessible URL path
+2. **Physical Location**: Actual implementation file/method
+3. **Discovery Method**: File_Scan, Config_Analysis, Framework_Detection
+4. **Configuration Source**: web.config, Global.asax, RouteConfig, etc.
+5. **Route Pattern**: How virtual URL maps to physical implementation
+6. **Endpoint Status**: Active, Deprecated, Configured_But_Missing
+7. **Dependencies**: Required modules, handlers, or framework components
+
+#### Enhanced Classification Logic
+```powershell
+# Multi-layer endpoint classification
+function Classify-Endpoint {
+    param($File, $Line, $Pattern, $ConfigSource)
+
+    $classification = @{
+        Type = "Unknown"
+        Method = "GET"
+        VirtualURL = ""
+        PhysicalLocation = $File
+        DiscoveryMethod = "File_Scan"
+        Dependencies = @()
+    }
+
+    # REST API Detection
+    if ($Pattern -match "HttpGet|HttpPost|HttpPut|HttpDelete") {
+        $classification.Type = "REST API"
+        $classification.Method = ($Pattern -split "\[")[1] -replace "Http|Attribute|\]", ""
+    }
+
+    # Virtual Route Detection
+    if ($ConfigSource -and ($ConfigSource -match "web.config|Global.asax")) {
+        $classification.DiscoveryMethod = "Config_Analysis"
+        $classification.Dependencies += "URL_Rewriting"
+    }
+
+    return $classification
+}
+```
+
+### Phase 5: Enhanced CSV Generation
+
+#### Extended CSV Schema
 ```csv
-Code,Endpoint_Type,HTTP_Method,Endpoint_Path,File_Path,Line_Number,Method_Name,Parameters,Authentication,Access_Level,Business_Domain,Framework_Version,Notes
+Code,Endpoint_Type,HTTP_Method,Endpoint_Path,Virtual_URL,Physical_Location,Discovery_Method,Configuration_Source,File_Path,Line_Number,Method_Name,Parameters,Authentication,Access_Level,Business_Domain,Framework_Version,Route_Pattern,Endpoint_Status,Dependencies,Notes
 ```
+
+#### New Column Definitions (Enhanced Schema)
+- **Virtual_URL**: Publicly accessible URL (what users hit)
+- **Physical_Location**: Actual implementation file/method
+- **Discovery_Method**: File_Scan, Config_Analysis, Framework_Detection
+- **Configuration_Source**: web.config, Global.asax, RouteConfig, etc.
+- **Route_Pattern**: How virtual URL maps to implementation
+- **Endpoint_Status**: Active, Deprecated, Configured_But_Missing
+- **Dependencies**: Required components (IIS_Rewrite, WCF_Runtime, etc.)
 
 #### Column Definitions
 - **Code**: Unique identifier (repo-endpoint-00001)
@@ -160,37 +342,37 @@ Code,Endpoint_Type,HTTP_Method,Endpoint_Path,File_Path,Line_Number,Method_Name,P
 ### WebForms Specific Patterns
 ```powershell
 # Page methods and event handlers
-rg "protected void (Page_Load|Button.*_Click|.*_Click)" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "protected void (Page_Load|Button.*_Click|.*_Click)" -Recurse
 
 # Server controls and data binding
-rg "asp:.*runat=\"server\"|<%.*%>|DataBind\(\)" --type html
+Select-String -Path "repositories\{repo_name}\*.aspx" -Pattern "asp:.*runat=""server""|<%.*%>|DataBind\(\)" -Recurse
 
 # ViewState and postback patterns
-rg "__doPostBack|ViewState|Page\.IsPostBack" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "__doPostBack|ViewState|Page\.IsPostBack" -Recurse
 ```
 
 ### Legacy ASP.NET Patterns
 ```powershell
 # Web methods in pages
-rg "\[WebMethod\].*public static" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "\[WebMethod\].*public static" -Recurse
 
 # Global.asax handlers
-rg "Application_Start|Session_Start|Application_Error" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "Application_Start|Session_Start|Application_Error" -Recurse
 
 # HTTP Modules and Handlers
-rg "IHttpModule|IHttpHandler|ProcessRequest" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "IHttpModule|IHttpHandler|ProcessRequest" -Recurse
 ```
 
 ### Modern .NET Patterns
 ```powershell
 # Minimal API patterns
-rg "app\.(Map|Use|Run)" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "app\.(Map|Use|Run)" -Recurse
 
 # SignalR Hubs
-rg "class.*Hub|IHubContext" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "class.*Hub|IHubContext" -Recurse
 
 # OData Controllers
-rg "class.*ODataController" --type cs
+Select-String -Path "repositories\{repo_name}\*.cs" -Pattern "class.*ODataController" -Recurse
 ```
 
 ## Efficiency Optimizations

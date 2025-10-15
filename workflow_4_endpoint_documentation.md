@@ -51,7 +51,7 @@ $webforms = $endpoints | Where-Object { $_.Endpoint_Type -eq "WebForm" }
 $wcfServices = $endpoints | Where-Object { $_.Endpoint_Type -eq "WCF Service" }
 ```
 
-### Phase 2: Multi-Type Endpoint Documentation
+### Phase 2: Enhanced Multi-Type Endpoint Documentation
 
 #### 2.1 REST API Documentation
 **Template**: `templates/rest_api_endpoint_template.md`
@@ -69,7 +69,34 @@ $controllerPath = "repositories\{repo}\{endpoint.File_Path}"
 Select-String -Path $controllerPath -Pattern "public.*{endpoint.Method_Name}" -Context 5,10
 ```
 
-#### 2.2 WebForm Documentation
+#### 2.2 Virtual/Configuration-Based Endpoints (NEW)
+**Template**: `templates/virtual_endpoint_template.md`
+
+**Analysis Focus**:
+- Configuration source analysis (web.config, Global.asax)
+- Virtual-to-physical URL mapping
+- Route pattern documentation
+- Configuration dependency analysis
+- Implementation code examination
+
+```powershell
+# Virtual endpoint analysis
+if ($endpoint.Discovery_Method -eq "Config_Analysis") {
+    $configPath = "repositories\{repo}\{endpoint.Configuration_Source}"
+    $virtualURL = $endpoint.Virtual_URL
+    $physicalLocation = $endpoint.Physical_Location
+
+    # Extract configuration details
+    Select-String -Path $configPath -Pattern $endpoint.Route_Pattern -Context 3,3
+
+    # Analyze physical implementation
+    if (Test-Path "repositories\{repo}\{endpoint.Physical_Location}") {
+        Select-String -Path "repositories\{repo}\{endpoint.Physical_Location}" -Pattern $endpoint.Method_Name -Context 5,10
+    }
+}
+```
+
+#### 2.3 WebForm Documentation
 **Template**: `templates/webform_endpoint_template.md`
 
 **Analysis Focus**:
@@ -160,19 +187,148 @@ Each endpoint gets a comprehensive `.md` file with:
 - **ASMX**: SOAP operations, XML schema
 - **Handler**: HTTP processing, context handling
 
-#### Documentation Template Usage
+#### Enhanced Documentation Template Usage
 ```powershell
-# Template processing for different endpoint types
+# Enhanced template processing for different endpoint types
 switch ($endpoint.Endpoint_Type) {
     "REST API" { $template = "templates/rest_api_endpoint_template.md" }
     "WebForm" { $template = "templates/webform_endpoint_template.md" }
     "WCF Service" { $template = "templates/wcf_service_endpoint_template.md" }
-    "ASMX" { $template = "templates/asmx_service_endpoint_template.md" }
+    "ASMX Service" { $template = "templates/asmx_service_endpoint_template.md" }
+    "Handler" { $template = "templates/handler_endpoint_template.md" }
+    "Virtual Route" { $template = "templates/virtual_endpoint_template.md" }
+    "URL Rewrite" { $template = "templates/virtual_endpoint_template.md" }
     default { $template = "templates/generic_endpoint_template.md" }
+}
+
+# Additional validation for virtual endpoints
+if ($endpoint.Discovery_Method -eq "Config_Analysis") {
+    # Validate configuration source exists
+    $configPath = "repositories\{repo}\$($endpoint.Configuration_Source)"
+    if (-not (Test-Path $configPath)) {
+        Write-Warning "Configuration source missing: $configPath"
+        Add-Content "missed_endpoints.csv" "$($endpoint.Code),Missing_Config_Source,$configPath"
+    }
+
+    # Validate physical implementation exists
+    $physicalPath = "repositories\{repo}\$($endpoint.Physical_Location)"
+    if (-not (Test-Path $physicalPath)) {
+        Write-Warning "Physical implementation missing: $physicalPath"
+        Add-Content "missed_endpoints.csv" "$($endpoint.Code),Missing_Implementation,$physicalPath"
+    }
 }
 ```
 
-### Phase 5: Validation and Gap Detection
+### Phase 5: Enhanced Validation and Gap Detection
+
+#### 5.1 Multi-Layer Validation
+**Enhanced validation covers both physical and virtual endpoints**
+
+```powershell
+# Initialize validation tracking
+$validationResults = @{
+    TotalEndpoints = $endpoints.Count
+    DocumentedEndpoints = 0
+    FailedEndpoints = @()
+    MissingImplementations = @()
+    ConfigurationIssues = @()
+}
+
+# Validate each endpoint type
+foreach ($endpoint in $endpoints) {
+    $validationStatus = "Valid"
+
+    # Physical file validation
+    if ($endpoint.Discovery_Method -eq "File_Scan") {
+        $filePath = "repositories\{repo}\$($endpoint.File_Path)"
+        if (-not (Test-Path $filePath)) {
+            $validationStatus = "Missing_File"
+            $validationResults.FailedEndpoints += $endpoint
+        }
+    }
+
+    # Virtual endpoint validation
+    if ($endpoint.Discovery_Method -eq "Config_Analysis") {
+        # Validate configuration source
+        $configPath = "repositories\{repo}\$($endpoint.Configuration_Source)"
+        if (-not (Test-Path $configPath)) {
+            $validationStatus = "Missing_Config"
+            $validationResults.ConfigurationIssues += $endpoint
+        }
+
+        # Validate physical implementation
+        if ($endpoint.Physical_Location -and $endpoint.Physical_Location -ne "N/A") {
+            $physicalPath = "repositories\{repo}\$($endpoint.Physical_Location)"
+            if (-not (Test-Path $physicalPath)) {
+                $validationStatus = "Missing_Implementation"
+                $validationResults.MissingImplementations += $endpoint
+            }
+        }
+    }
+
+    # Track documentation status
+    if ($validationStatus -eq "Valid") {
+        $validationResults.DocumentedEndpoints++
+    }
+}
+```
+
+#### 5.2 Gap Detection and Reporting
+**Identify and document all discovered gaps**
+
+```powershell
+# Create missed_endpoints.csv if gaps found
+if ($validationResults.FailedEndpoints.Count -gt 0 -or
+    $validationResults.MissingImplementations.Count -gt 0 -or
+    $validationResults.ConfigurationIssues.Count -gt 0) {
+
+    # CSV header
+    "Endpoint_Code,Issue_Type,Missing_Resource,Virtual_URL,Expected_Location,Notes" |
+        Out-File "analysis\{repo}\{sub_repo}\missed_endpoints.csv"
+
+    # Document missing files
+    foreach ($endpoint in $validationResults.FailedEndpoints) {
+        "$($endpoint.Code),Missing_File,$($endpoint.File_Path),$($endpoint.Virtual_URL),$($endpoint.File_Path),Physical file not found" |
+            Add-Content "analysis\{repo}\{sub_repo}\missed_endpoints.csv"
+    }
+
+    # Document missing implementations
+    foreach ($endpoint in $validationResults.MissingImplementations) {
+        "$($endpoint.Code),Missing_Implementation,$($endpoint.Physical_Location),$($endpoint.Virtual_URL),$($endpoint.Physical_Location),Virtual route target not found" |
+            Add-Content "analysis\{repo}\{sub_repo}\missed_endpoints.csv"
+    }
+
+    # Document configuration issues
+    foreach ($endpoint in $validationResults.ConfigurationIssues) {
+        "$($endpoint.Code),Missing_Config,$($endpoint.Configuration_Source),$($endpoint.Virtual_URL),$($endpoint.Configuration_Source),Configuration source not found" |
+            Add-Content "analysis\{repo}\{sub_repo}\missed_endpoints.csv"
+    }
+}
+```
+
+#### 5.3 Quality Assurance Metrics
+**Calculate and report discovery and documentation quality**
+
+```powershell
+# Calculate quality metrics
+$totalDiscovered = $endpoints.Count
+$successfullyDocumented = $validationResults.DocumentedEndpoints
+$documentationCoverage = [Math]::Round(($successfullyDocumented / $totalDiscovered) * 100, 2)
+
+$physicalEndpoints = @($endpoints | Where-Object { $_.Discovery_Method -eq "File_Scan" }).Count
+$virtualEndpoints = @($endpoints | Where-Object { $_.Discovery_Method -eq "Config_Analysis" }).Count
+$frameworkEndpoints = @($endpoints | Where-Object { $_.Discovery_Method -eq "Framework_Detection" }).Count
+
+# Quality report
+Write-Host "=== Workflow 4 Quality Report ==="
+Write-Host "Total Endpoints Discovered: $totalDiscovered"
+Write-Host "  - Physical Endpoints: $physicalEndpoints"
+Write-Host "  - Virtual Endpoints: $virtualEndpoints"
+Write-Host "  - Framework Endpoints: $frameworkEndpoints"
+Write-Host "Successfully Documented: $successfullyDocumented"
+Write-Host "Documentation Coverage: $documentationCoverage%"
+Write-Host "Failed Validations: $($validationResults.FailedEndpoints.Count)"
+```
 
 #### Documentation Coverage Validation
 1. **Inventory Parsing**: Extract all endpoint codes from CSV
@@ -208,11 +364,11 @@ Code,Endpoint_Type,Endpoint_Path,File_Path,Line_Number,Discovery_Method,Reason_M
 $additionalEndpoints = @()
 
 # Look for endpoints not in original inventory
-$newControllers = rg "class.*Controller" "repositories\{repo}" --type cs |
-    Where-Object { $_ -notin $originalFiles }
+$newControllers = Select-String -Path "repositories\{repo}\*.cs" -Pattern "class.*Controller" -Recurse |
+    Where-Object { $_.Filename -notin $originalFiles }
 
-$newWebMethods = rg "\[WebMethod\]" "repositories\{repo}" --type cs |
-    Where-Object { $_ -notin $originalWebMethods }
+$newWebMethods = Select-String -Path "repositories\{repo}\*.cs" -Pattern "\[WebMethod\]" -Recurse |
+    Where-Object { $_.Filename -notin $originalWebMethods }
 
 # Add to missed endpoints list
 foreach ($newEndpoint in $additionalEndpoints) {

@@ -29,12 +29,8 @@ The .NET Documentation Wizard provides three specialized workflows for comprehen
 ## Prerequisites
 
 ### Required Tools
-- **ripgrep** - For fast endpoint extraction
-  ```bash
-  # Install ripgrep (if not already installed)
-  brew install ripgrep  # macOS
-  sudo apt install ripgrep  # Linux
-  ```
+- **Windows PowerShell** - For fast pattern detection and file operations (pre-installed on Windows)
+- **File system access** - Read permissions for repositories and write permissions for analysis outputs
 
 ### Supported .NET Projects
 - ✅ .NET 6+ with Minimal APIs
@@ -68,7 +64,7 @@ Run repository API discovery workflow
 
 ⚠️ **For Large Codebases (20-30M LOC)**: This workflow is optimized for efficiency with minimal file reading and maximum use of PowerShell/CMD commands for pattern detection on Windows.
 
-🖥️ **Windows Users**: All commands use PowerShell (Get-ChildItem, Select-String, Test-Path) with CMD fallbacks. For best performance on large codebases, consider installing ripgrep.
+🖥️ **Windows Users**: All commands use PowerShell (Get-ChildItem, Select-String, Test-Path) with CMD fallbacks for optimal Windows performance and compatibility.
 
 **Expected Output**:
 ```
@@ -373,12 +369,10 @@ target-repository/
 - Manual validation may be required for ambiguous matches
 
 #### Workflow 3 Issues
-**"ripgrep not found"**
-```bash
-# Install ripgrep
-brew install ripgrep  # macOS
-sudo apt install ripgrep  # Linux
-```
+**"PowerShell pattern detection failed"**
+- Ensure Windows PowerShell is available (pre-installed on Windows)
+- Verify file paths use Windows path separators (backslashes)
+- Check that Select-String commands have proper syntax
 
 **"No endpoints found"**
 - Verify you're targeting a .NET project directory

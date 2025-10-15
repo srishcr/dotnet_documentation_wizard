@@ -97,8 +97,8 @@ Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.aspx"          # WebForm
 Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.svc"           # WCF Services
 Select-String -Path "repositories\{repo}\*.cs" -Pattern "\[WebMethod\]" -Recurse  # ASMX
 
-# Cross-platform using ripgrep (recommended for large codebases)
-rg "class.*Controller|\.aspx|\.svc|\[WebMethod\]" "repositories\{repo}"
+# Windows PowerShell universal endpoint detection (recommended)
+Select-String -Path "repositories\{repo}\*" -Pattern "class.*Controller|\.aspx|\.svc|\[WebMethod\]" -Recurse
 ```
 
 ## Centralized Analysis Structure
@@ -150,12 +150,12 @@ Get-ChildItem "repositories\REPO" -Recurse -Filter "*.csproj" |
     ForEach-Object { Select-String -Path $_.FullName -Pattern "<TargetFramework>" }
 ```
 
-### Cross-Platform Alternative (Recommended for Large Codebases)
-```bash
-# Using ripgrep for optimal performance
-rg "\[ApiController\]|MapGet|app\.Map" repositories/REPO --type cs
-rg "<TargetFramework>" repositories/REPO --type xml
-rg "\.aspx|\.svc|\[WebMethod\]" repositories/REPO
+### Windows PowerShell Alternative (Optimized for Windows)
+```powershell
+# Optimized PowerShell pattern detection
+Select-String -Path "repositories\REPO\*.cs" -Pattern "\[ApiController\]|MapGet|app\.Map" -Recurse
+Select-String -Path "repositories\REPO\*.xml","repositories\REPO\*.csproj" -Pattern "<TargetFramework>" -Recurse
+Select-String -Path "repositories\REPO\*" -Pattern "\.aspx|\.svc|\[WebMethod\]" -Recurse
 ```
 
 ## Advanced Security and Compliance Framework
@@ -232,6 +232,7 @@ Workflow 5 (individual analysis options)
 - **wcf_service_endpoint_template.md**: Service contracts, SOAP operations, bindings
 - **asmx_service_endpoint_template.md**: WebMethods, XML schema, SOAP messages
 - **handler_endpoint_template.md**: HTTP processing, context handling
+- **virtual_endpoint_template.md**: Configuration-based routing, virtual-to-physical mapping
 - **generic_endpoint_template.md**: Fallback for unrecognized endpoint types
 
 ### Universal Template Elements
@@ -291,7 +292,7 @@ Workflow 5 (individual analysis options)
 ## Enterprise Integration Features
 
 ### Static Endpoint Extraction (Workflow 3 Enhancement)
-- **Efficiency Tool**: `static_dotnet_endpoint_extractor` using ripgrep
+- **Efficiency Tool**: `static_dotnet_endpoint_extractor` using PowerShell pattern detection
 - **Context Preservation**: Pre-extract API patterns to save AI context
 - **Fallback Strategy**: Graceful degradation if extractor unavailable
 - **Large Codebase Support**: Handle enterprise-scale repositories efficiently
@@ -325,6 +326,10 @@ dotnet_documentation_wizard/
 │   │   ├── rest_api_endpoint_template.md
 │   │   ├── webform_endpoint_template.md
 │   │   ├── wcf_service_endpoint_template.md
+│   │   ├── asmx_service_endpoint_template.md
+│   │   ├── handler_endpoint_template.md
+│   │   ├── virtual_endpoint_template.md
+│   │   ├── generic_endpoint_template.md
 │   │   ├── 01_overview_template.md
 │   │   ├── 02_technical_details_template.md
 │   │   ├── 03_sensitive_data_template.md
@@ -358,7 +363,7 @@ When implementing this system, create:
 
 4. **Supporting Infrastructure**
    - Centralized analysis folder structure
-   - Cross-platform compatibility (Windows PowerShell + ripgrep)
+   - Windows PowerShell compatibility with optimized commands
    - Error handling and validation frameworks
    - Performance optimization for enterprise scale
 
@@ -367,7 +372,7 @@ When implementing this system, create:
 - **Dependency Clarity**: Prerequisites explicitly documented
 - **Output Format Standardization**: Consistent CSV and markdown structures
 - **Template Integration**: All workflows properly reference templates
-- **Cross-Platform Support**: Windows commands with ripgrep alternatives
+- **Windows Compatibility**: Optimized PowerShell commands for Windows environments
 
 ### Enterprise Readiness Requirements
 - **Scalability**: Handle 60-70 repositories with 20-30M lines of code

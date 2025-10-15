@@ -31,14 +31,14 @@ Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Techno
 # Phase 1 - Ultra-fast repository listing (Windows)
 Get-ChildItem repositories\ -Directory | Select-Object -First 100 | Select-Object Name
 
-# Cross-platform alternative using ripgrep (if available)
-rg --files repositories\ | head -100
+# Windows PowerShell alternative for file listing
+Get-ChildItem repositories\ -Recurse -File | Select-Object -First 100 | Select-Object FullName
 
 # Instant .NET detection (per repository) - Windows
 Test-Path "repositories\REPO\*.sln" -or (Get-ChildItem "repositories\REPO" -Recurse -Depth 2 -Filter "*.csproj" | Select-Object -First 1)
 
 # Cross-platform using built-in tools
-dir repositories\REPO\*.sln 2>nul || dir repositories\REPO\*.csproj /s /b | findstr /m ".*" | head -1
+dir repositories\REPO\*.sln 2>nul || (dir repositories\REPO\*.csproj /s /b | findstr /m ".*" | findstr /n . | findstr "^1:")
 ```
 
 ### Phase 2: Minimal API Detection (File System Only)
@@ -54,15 +54,12 @@ dir repositories\REPO\*.sln 2>nul || dir repositories\REPO\*.csproj /s /b | find
 # Check for API projects by naming (Windows)
 Get-ChildItem "repositories\REPO" -Recurse -Filter "*.csproj" | Where-Object { $_.Name -match "api|web|service" -case insensitive }
 
-# Quick pattern detection (Windows PowerShell)
+# Windows PowerShell pattern detection (recommended)
 Select-String -Path "repositories\REPO\*.cs" -Pattern "\[ApiController\]|MapGet|app\.Map" -Recurse | Select-Object -First 5
-
-# Cross-platform using ripgrep (recommended for large codebases)
-rg "\[ApiController\]|MapGet|app\.Map" repositories\REPO --type cs | head -5
 
 # Windows CMD fallback
 dir repositories\REPO\*Controller.cs /s /b | find /c ":"
-findstr /s /m "\[ApiController\]\|MapGet\|app\.Map" repositories\REPO\*.cs | head -5
+findstr /s /m "\[ApiController\]\|MapGet\|app\.Map" repositories\REPO\*.cs
 ```
 
 ### Phase 3: Minimal Technology Analysis
@@ -81,12 +78,12 @@ if (Test-Path "repositories\REPO\README.md") { Get-Content "repositories\REPO\RE
 # Solution structure (Windows - for mono-repo detection)
 (Get-ChildItem "repositories\REPO" -Recurse -Filter "*.sln").Count
 
-# Cross-platform using ripgrep
-rg "<TargetFramework>" repositories\REPO --type xml | head -1
+# Windows PowerShell framework detection
+Select-String -Path "repositories\REPO\*.csproj","repositories\REPO\*.xml" -Pattern "<TargetFramework>" -Recurse | Select-Object -First 1
 
 # Windows CMD alternatives
-findstr /s "<TargetFramework>" repositories\REPO\*.csproj | head -1
-more +1 repositories\REPO\README.md | head -20 2>nul || echo No README
+findstr /s "<TargetFramework>" repositories\REPO\*.csproj
+powershell "if (Test-Path 'repositories\REPO\README.md') { Get-Content 'repositories\REPO\README.md' | Select-Object -First 20 } else { 'No README' }"
 dir repositories\REPO\*.sln /s /b | find /c ":"
 ```
 2. **Repository Purpose Analysis**: Examine README files, project names, and folder structure
@@ -184,7 +181,7 @@ Get-ChildItem "repositories\REPO\api" -Recurse -Filter "*Controller.cs" 2>$null
 
 #### 🚀 **Efficiency Rules**
 - **Max 5 file reads per repository** (only project files and README)
-- **Use bash commands for counting and pattern detection**
+- **Use PowerShell and CMD commands for counting and pattern detection**
 - **Leverage file system structure over file contents**
 - **Skip repositories without `.csproj` or `.sln` files immediately**
 - **Batch operations using find/grep/ls commands**

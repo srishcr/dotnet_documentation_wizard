@@ -88,7 +88,7 @@ This is the master coordination guide for the .NET Documentation Wizard's three 
 
 ⚠️ **LARGE CODEBASE WARNING**: For 60-70 repositories with millions of lines, use ONLY file system commands, pattern matching, and existence checks. Avoid reading file contents except for .csproj/.sln and first 20 lines of README.
 
-🖥️ **WINDOWS COMPATIBILITY**: All workflows use PowerShell commands (Get-ChildItem, Select-String, Test-Path) with CMD fallbacks. Cross-platform ripgrep is recommended for optimal performance.
+🖥️ **WINDOWS COMPATIBILITY**: All workflows use PowerShell commands (Get-ChildItem, Select-String, Test-Path) with CMD fallbacks for optimal Windows performance.
 
 ## Key Detection Patterns
 - Controller files (`*Controller.cs`)
@@ -163,6 +163,7 @@ Score = (Name Similarity × 0.3) + (Domain Alignment × 0.25) +
 - `wcf_service_endpoint_template.md` - WCF service operations
 - `asmx_service_endpoint_template.md` - ASMX web methods
 - `handler_endpoint_template.md` - HTTP handlers
+- `virtual_endpoint_template.md` - Configuration-based virtual endpoints
 - `generic_endpoint_template.md` - Fallback for unrecognized types
 
 ---
@@ -243,8 +244,7 @@ For specific analysis needs:
 - All workflows use shared **templates/** folder
 
 ### Tool Dependencies
-- **ripgrep**: Recommended for large codebase efficiency (all workflows)
-- **PowerShell/CMD**: Windows optimization for Workflows 1 & 3
+- **PowerShell/CMD**: Windows optimization for all workflows
 - **static_dotnet_endpoint_extractor**: Optional for Workflow 3 efficiency
 - **File system access**: All workflows require appropriate permissions
 
@@ -297,7 +297,7 @@ For specific analysis needs:
 - **Dependencies**: Update all related files when making structural changes
 
 ### Tool Dependencies
-- **ripgrep**: Keep updated for optimal performance
+- **PowerShell**: Windows-native pattern matching and file operations
 - **static_dotnet_endpoint_extractor**: Maintain and enhance for better coverage
 - **MkDocs/Docsify**: Update for latest documentation features
 

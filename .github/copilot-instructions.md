@@ -168,8 +168,8 @@ Get-ChildItem "repositories\REPO" -Recurse -Filter "*.csproj" | Select-Object -F
 Select-String -Path "repositories\REPO\*.cs" -Pattern "\[ApiController\]" -Recurse
 (Get-ChildItem "repositories\REPO" -Recurse -Filter "*Controller.cs").Count
 
-# Cross-platform alternative using ripgrep (recommended)
-rg "\[ApiController\]|MapGet" repositories\REPO --type cs
+# Windows PowerShell pattern detection (recommended)
+Select-String -Path "repositories\REPO\*.cs" -Pattern "\[ApiController\]|MapGet" -Recurse
 ```
 
 ### Detection Patterns
@@ -290,7 +290,7 @@ API Name,API Description,Probable Repository,Confidence Level,Matching Criteria,
 4. **Multi-Type Detection**: Scan for all endpoint types simultaneously
 
 ### Phase 2: Universal Endpoint Discovery
-1. **Advanced Pattern Detection**: Use Windows PowerShell or ripgrep for efficiency
+1. **Advanced Pattern Detection**: Use Windows PowerShell commands for efficiency
 2. **Endpoint Classification**: Accurately classify all endpoint types
 3. **Location Tracking**: Precise file paths and line numbers
 4. **Metadata Extraction**: Gather endpoint parameters, methods, authentication
@@ -309,8 +309,8 @@ Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.aspx"          # WebForm
 Get-ChildItem "repositories\{repo}" -Recurse -Filter "*.svc"           # WCF Services
 Select-String -Path "repositories\{repo}\*.cs" -Pattern "\[WebMethod\]" -Recurse  # ASMX
 
-# Cross-platform using ripgrep (recommended for large codebases)
-rg "class.*Controller|\.aspx|\.svc|\[WebMethod\]" "repositories\{repo}"
+# Windows PowerShell universal endpoint detection (recommended)
+Select-String -Path "repositories\{repo}\*" -Pattern "class.*Controller|\.aspx|\.svc|\[WebMethod\]" -Recurse
 ```
 
 # 📚 WORKFLOW 4: UNIVERSAL ENDPOINT DOCUMENTATION
@@ -353,6 +353,7 @@ rg "class.*Controller|\.aspx|\.svc|\[WebMethod\]" "repositories\{repo}"
 - **wcf_service_endpoint_template.md**: Service contracts, SOAP operations, bindings
 - **asmx_service_endpoint_template.md**: WebMethods, XML schema, SOAP messages
 - **handler_endpoint_template.md**: HTTP processing, context handling
+- **virtual_endpoint_template.md**: Configuration-based routing, virtual-to-physical mapping
 - **generic_endpoint_template.md**: Fallback for unrecognized endpoint types
 
 # 🔍 WORKFLOW 5: GRANULAR REPOSITORY ANALYSIS

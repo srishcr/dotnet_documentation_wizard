@@ -1,0 +1,11 @@
+API Name,Description,Domain,Expected Technology,Endpoint Pattern
+Catalog API,Product catalog management and search,E-commerce,.NET Core,/api/catalog/*
+Order API,Order processing and management,E-commerce,.NET Framework,/api/orders/*
+Payment API,Payment processing and gateway integration,Finance,.NET Core,/api/payments/*
+User Management API,User authentication and profile management,Identity,.NET Core,/api/users/*
+Inventory API,Stock management and tracking,E-commerce,.NET Core,/api/inventory/*
+Notification API,Email and SMS notification services,Communication,.NET Core,/api/notifications/*
+Reporting API,Business reporting and analytics,Analytics,.NET Framework,/api/reports/*
+Document API,Document storage and retrieval,Content Management,.NET Core,/api/documents/*
+Audit API,System audit logging and compliance,Security,.NET Core,/api/audit/*
+Configuration API,Application configuration management,System,.NET Core,/api/config/*

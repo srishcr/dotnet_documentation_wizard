@@ -1,0 +1,5 @@
+Repository Path,Contains APIs,Repository Type,Summary,Potential API Files,Technology Stack,Mono Repo Structure,Notes
+eShopOnWeb-main,Yes,Mono Repo,E-commerce web application with catalog and ordering,src/PublicApi/Controllers/CatalogController.cs; src/Web/Controllers/BasketController.cs,.NET 8 ASP.NET Core Entity Framework Clean Architecture,PublicApi;Web;BlazorAdmin,Well-structured Clean Architecture with multiple API projects
+MyLibrary,No,Library,Utility library for data processing,N/A,.NET Standard 2.0,N/A,No API endpoints found - pure library project
+LegacyApp,Yes,Single App,Legacy ASP.NET WebForms application with some Web API,WebApi/Controllers/DataController.cs; Default.aspx,.NET Framework 4.8 ASP.NET WebForms Web API,N/A,Mixed architecture - WebForms with Web API controllers
+MicroserviceA,Yes,Single App,Product catalog microservice,Controllers/ProductController.cs; Controllers/CategoryController.cs,.NET 6 ASP.NET Core Minimal APIs Entity Framework,N/A,Modern microservice with clean API design

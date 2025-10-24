@@ -1,0 +1,6 @@
+Finding_ID,Category,Severity,Title,Location,Risk_Score,Remediation
+AUTH-001,Authentication,High,Weak Password Policy,src/Identity/PasswordValidator.cs:25,8.5,Implement stronger password policies with minimum 12 characters
+AUTHZ-001,Authorization,Medium,Missing Authorization Check,src/Controllers/AdminController.cs:45,6.2,Add [Authorize] attribute with appropriate role restrictions
+AUTH-002,Authentication,Medium,JWT Token Without Expiration,src/Services/TokenService.cs:67,5.8,Add appropriate token expiration and refresh mechanism
+AUTHZ-002,Authorization,High,Privilege Escalation Risk,src/Controllers/UserController.cs:89,8.7,Implement server-side role validation
+AUTH-003,Session Management,Medium,Insecure Session Configuration,src/Startup.cs:89,6.1,Configure session cookies with Secure and HttpOnly flags

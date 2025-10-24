@@ -4,7 +4,7 @@
 A comprehensive collection of specialized, decoupled workflows for documenting .NET codebases. Each workflow is self-contained and focused on a specific aspect of API analysis and documentation.
 
 ## Mono-Repo Architecture
-This repository contains **5 independent workflow sub-repos**, each designed to be:
+This repository contains **6 independent workflow sub-repos**, each designed to be:
 - **Self-contained**: Complete with its own copilot instructions, templates, and documentation
 - **Decoupled**: Can be used independently without dependencies on other workflows
 - **Focused**: Optimized for a specific purpose without complexity overhead
@@ -47,6 +47,13 @@ This repository contains **5 independent workflow sub-repos**, each designed to 
 - **Features**: Granular control, individual or combined analysis, enhanced with endpoint context
 - **Trigger**: `"Run overview only analysis for [repo-name]"` or `"Perform all analysis for [repo-name]"`
 
+### 🔐 [Workflow 6: Security Analysis](./workflow-6-security-analysis/)
+**Purpose**: Comprehensive authentication, authorization, and security analysis
+- **Input**: Target repository path + optional endpoint inventory from Workflow 3
+- **Output**: Security summary, detailed report, findings CSV, sensitive data inventory
+- **Features**: Deep-dive security analysis, OWASP compliance, regulatory compliance assessment
+- **Trigger**: `"Analyze security setup for [repo-name]"` or `"Security audit for [repository]"`
+
 ## Quick Start Guide
 
 ### Choose Your Workflow
@@ -57,6 +64,7 @@ Each workflow is completely independent. Choose based on your specific need:
 3. **Detailed Analysis**: Use Workflow 3 to create comprehensive endpoint inventory
 4. **Documentation**: Use Workflow 4 to document all endpoints with validation
 5. **Business Analysis**: Use Workflow 5 for targeted business and technical analysis
+6. **Security Analysis**: Use Workflow 6 for comprehensive security assessment
 
 ### Navigation
 Each workflow folder contains:
@@ -103,6 +111,7 @@ For comprehensive endpoint documentation:
 For targeted analysis without full documentation:
 ```
 1. Workflow 5: Run specific analysis type (overview, technical, security, business)
+2. Workflow 6: Comprehensive security analysis (can leverage Workflow 3 endpoint context)
 ```
 
 ### Mapping Pattern
@@ -206,6 +215,7 @@ Each workflow folder contains comprehensive documentation:
 | Create endpoint inventory | Workflow 3 | `"Create endpoint inventory for [repo]"` |
 | Document endpoints | Workflow 4 | `"Document all endpoints from inventory"` |
 | Business analysis | Workflow 5 | `"Run overview analysis for [repo]"` |
+| Security analysis | Workflow 6 | `"Analyze security setup for [repo]"` |
 | Complete documentation | Multiple | Use Workflows 3 → 4 → 5 |
 
 **Get Started**: Navigate to any workflow folder and follow the README instructions for immediate usage.

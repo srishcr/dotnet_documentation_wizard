@@ -46,15 +46,24 @@ Map from consolidated endpoint inventory to catalog format:
 ## Conversion Logic
 
 ### Endpoint Name Generation
-Create meaningful names from paths:
+Create descriptive names using path, method, parameters, and description context:
+
+**CRITICAL**: Use Endpoint_Description and Notes to create specific names that avoid duplicates:
 ```
-/api/v1/users/{id} (GET) → "Get User Details"
-/api/v1/users (POST) → "Create User"
-/api/v1/users/{id} (PUT) → "Update User"
-/api/v1/users/{id} (DELETE) → "Delete User"
-/api/v1/policies/search (GET) → "Search Policies"
-/api/v1/claims/{id}/status (PUT) → "Update Claim Status"
+/api/v1/records/search?postcode={code} (GET) + "Search by postcode" → "Search Records By Postcode"
+/api/v1/records/search?address={addr} (GET) + "Search by address" → "Search Records By Address"
+/api/v1/customers (POST) + "Pre-registration" → "Preregister Customer Account"
+/api/v1/customers (POST) + "Full account creation" → "Create New Customer Account"
+/api/v1/policies/{id}/validate (GET) + "Validation check" → "Validate Policy Details"
+/api/v1/policies/{id}/approve (PUT) + "Approval workflow" → "Approve Policy Application"
 ```
+
+**Naming Rules**:
+1. **Use Description Context**: Combine path + method + key details from Endpoint_Description/Notes
+2. **Be Specific**: Include distinguishing factors (search criteria, workflow stage, etc.)
+3. **Avoid Duplicates**: Check for existing names and add qualifiers
+4. **Max 6 Words**: Keep concise but descriptive
+5. **Action-Entity-Qualifier**: "Validate Policy Details", "Search Records By Postcode"
 
 ### Category Classification
 Classify endpoints into categories:
@@ -106,9 +115,44 @@ $filteredCSV = $sourceCSV | Where-Object {
 $requiredColumns = @("Service_Name", "Endpoint_Path", "HTTP_Method", "Endpoint_Description", "Notes", "Authentication", "Business_Domain")
 ```
 
-### Step 2: Transform Each Endpoint
+### Step 2: Transform Each Endpoint (PowerShell Implementation)
+**IMPORTANT**: Always create PowerShell scripts, NOT Python scripts. This runs on Windows without Python.
+
+```powershell
+# PowerShell conversion logic for each endpoint
+foreach ($endpoint in $filteredCSV) {
+    # 1. Generate descriptive endpoint name using context
+    $pathParts = $endpoint.Endpoint_Path -split '/'
+    $description = $endpoint.Endpoint_Description
+    $notes = $endpoint.Notes
+    $method = $endpoint.HTTP_Method
+
+    # Create specific name using description context to avoid duplicates
+    $endpointName = Generate-DescriptiveEndpointName -Path $endpoint.Endpoint_Path -Method $method -Description $description -Notes $notes
+
+    # 2-7. Apply other transformations...
+}
+
+function Generate-DescriptiveEndpointName {
+    param($Path, $Method, $Description, $Notes)
+
+    # Combine description and notes for context
+    $context = "$Description $Notes".Trim()
+
+    # Extract key differentiators from context
+    if ($context -match "postcode|postal") { $qualifier = "By Postcode" }
+    elseif ($context -match "address") { $qualifier = "By Address" }
+    elseif ($context -match "pre.*reg|preregister") { $qualifier = "Preregister" }
+    elseif ($context -match "new.*account|full.*account") { $qualifier = "New Account" }
+    # Add more specific patterns...
+
+    # Build descriptive name: Action + Entity + Qualifier
+    return "$verb $entity $qualifier"
+}
+```
+
 For each row in filtered CSV (excluding swagger endpoints):
-1. **Generate Endpoint Name**: Create business-friendly name from path and method
+1. **Generate Descriptive Name**: Use path + method + description context to create specific names
 2. **Determine Category**: Classify based on path patterns and functionality
 3. **Combine Description**: Merge Endpoint_Description and Notes fields
 4. **Map Domain**: Classify into business domain
@@ -129,10 +173,12 @@ For each row in filtered CSV (excluding swagger endpoints):
 ## Conversion Rules
 
 ### Endpoint Name Rules
-- Use Title Case (e.g., "Get User Details")
-- Start with action verb (Get, Create, Update, Delete, Search, List)
-- Include entity name (User, Policy, Claim)
-- Be descriptive but concise (max 50 characters)
+- **Use Title Case**: "Search Records By Postcode"
+- **Start with action verb**: Get, Create, Update, Delete, Search, List, Validate, Approve
+- **Include entity name**: User, Policy, Claim, Record, Customer
+- **Add specific qualifier**: By Postcode, By Address, New Account, Preregister, etc.
+- **Use description context**: Leverage Endpoint_Description and Notes for specificity
+- **Max 6 words**: Keep concise but descriptive enough to avoid duplicates
 
 ### Category Rules
 - **System**: /health, /status, /config, /diagnostics
@@ -170,9 +216,41 @@ Based on endpoint characteristics:
 - Appropriate exposure type assignments
 - Standard authentication types
 
+## Implementation Requirements
+
+### PowerShell-Only Implementation
+**CRITICAL**: Always generate PowerShell scripts (.ps1), NEVER Python scripts.
+- Target environment is Windows without Python installed
+- Use PowerShell cmdlets: Import-Csv, Export-Csv, Select-Object, Where-Object
+- Use PowerShell string operations and regex matching
+- Create .ps1 files for conversion automation
+
+### Duplicate Name Prevention
+**CRITICAL**: Avoid endpoint name collisions by using context:
+1. **Analyze Endpoint_Description and Notes** for distinguishing factors
+2. **Use specific qualifiers**: "By Postcode", "By Address", "Preregister", "New Account"
+3. **Include workflow stage**: "Validate", "Approve", "Submit", "Process"
+4. **Add search criteria**: "By ID", "By Status", "By Date Range"
+5. **Check for existing names** and add qualifiers to prevent duplicates
+
+Example collision resolution:
+```
+Original: "Search Records" (3 duplicates)
+Resolved:
+- "Search Records By Postcode"
+- "Search Records By Address"
+- "Search Records By Date Range"
+
+Original: "Create Customer" (2 duplicates)
+Resolved:
+- "Preregister Customer Account"
+- "Create New Customer Account"
+```
+
 ## Success Criteria
-- Complete conversion of all endpoints from source CSV
-- Consistent and meaningful endpoint names
+- Complete conversion using PowerShell scripts only
+- Unique and descriptive endpoint names with zero duplicates
+- Context-driven naming using Endpoint_Description and Notes
 - Proper business domain mapping
 - Standard authentication type classification
 - Ready for enterprise API catalog integration

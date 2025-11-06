@@ -1,7 +1,7 @@
 Service_Name,Endpoint_Name,Endpoint_Category,Endpoint_Description,Domain,Endpoint_Type,Endpoint_Method,Endpoint_Path,Web_Domains,Authentication_Type,API_Spec_URL,Lifecycle_Status,Version,Created,API_Exposure_Type
 PolicyService,Get Policy Details,Data,Retrieve policy details by policy ID - Returns complete policy information including coverage details,Policy,REST_API,GET,/api/v1/policies/{policyId},api.internal.com,OAuth,,Live,v1,,Private
 PolicyService,Create New Policy,Process,Create a new insurance policy - Validates policy data and creates new policy record,Policy,REST_API,POST,/api/v1/policies,api.internal.com,OAuth,,Live,v1,,Private
-PolicyService,Search Policies,Experience,Search policies by various criteria - Supports filtering by customer ID agent territory and policy status,Policy,REST_API,GET,/api/v1/policies/search,agent.portal.com,OAuth,,Live,v1,,Private
+PolicyService,Search Policies By Territory,Experience,Search policies by various criteria - Supports filtering by customer ID agent territory and policy status,Policy,REST_API,GET,/api/v1/policies/search,agent.portal.com,OAuth,,Live,v1,,Private
 ClaimsService,Submit New Claim,Process,Submit a new insurance claim - Customer-facing endpoint for claim submission,Claims,REST_API,POST,/api/v1/claims,api.customer.com,OAuth,,Live,v1,,Public
 ClaimsService,Get Claim Status,Experience,Get current claim status and details - Returns claim status processing updates and estimated resolution,Claims,REST_API,GET,/api/v1/claims/{claimId}/status,api.customer.com,OAuth,,Live,v1,,Public
 ClaimsService,Update Claim Status,Process,Update claim processing status - Internal endpoint for claim processors to update status,Claims,REST_API,PUT,/api/v1/claims/{claimId}/status,api.internal.com,OAuth,,Live,v1,,Private

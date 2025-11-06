@@ -5,6 +5,10 @@ This guide provides detailed instructions for converting consolidated endpoint i
 
 ## Prerequisites
 
+### System Requirements
+- **Windows PowerShell**: Environment must have PowerShell available
+- **No Python Required**: Workflow generates PowerShell scripts only
+
 ### Required Input
 - **Consolidated Endpoint Inventory CSV** from Workflow 3 outputs
 - **Service Name Column**: Must include "Service_Name" as first column
@@ -59,15 +63,17 @@ Check generated files:
 
 ### Endpoint Name Generation Rules
 
-#### Standard Patterns
-| Path Pattern | Method | Generated Name |
-|--------------|--------|----------------|
-| `/api/v1/users/{id}` | GET | "Get User Details" |
-| `/api/v1/users` | POST | "Create User" |
-| `/api/v1/users/{id}` | PUT | "Update User" |
-| `/api/v1/users/{id}` | DELETE | "Delete User" |
-| `/api/v1/users/search` | GET | "Search Users" |
-| `/api/v1/users/list` | GET | "List Users" |
+#### Context-Driven Patterns (Use Description + Notes)
+| Path Pattern | Method | Description/Notes | Generated Name |
+|--------------|--------|------------------|----------------|
+| `/api/v1/records/search` | GET | "Search by postcode" | "Search Records By Postcode" |
+| `/api/v1/records/search` | GET | "Search by address" | "Search Records By Address" |
+| `/api/v1/customers` | POST | "Pre-registration workflow" | "Preregister Customer Account" |
+| `/api/v1/customers` | POST | "Full account creation" | "Create New Customer Account" |
+| `/api/v1/policies/{id}/validate` | GET | "Validation check" | "Validate Policy Details" |
+| `/api/v1/policies/{id}/approve` | PUT | "Approval workflow" | "Approve Policy Application" |
+
+**Key Principle**: Always use Endpoint_Description and Notes to create specific, non-duplicate names.
 
 #### Business Entity Patterns
 | Entity | GET | POST | PUT | DELETE |
@@ -206,7 +212,11 @@ Ensure all catalog entries have:
 **Solution**: Map to closest standard type, use "Custom" for unclear cases, document in conversion summary
 
 ### Issue: Duplicate Endpoint Names
-**Solution**: Add qualifier to distinguish (e.g., "Get User Details - Admin", "Get User Details - Public")
+**Solution**: Use Endpoint_Description and Notes to create specific qualifiers:
+- Instead of: "Search Records" (duplicate)
+- Use: "Search Records By Postcode", "Search Records By Address"
+- Instead of: "Create Customer" (duplicate)
+- Use: "Preregister Customer Account", "Create New Customer Account"
 
 ## Post-Conversion Tasks
 

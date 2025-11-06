@@ -33,7 +33,7 @@ Transform endpoints to catalog format for [service-name]
 
 ### Expected Output
 ```
-analysis/{repo_name}/{sub_repo}/
+analysis/
 ├── api_catalog.csv                    # 📋 Standardized catalog format
 └── catalog_conversion_summary.md      # 📊 Conversion statistics and quality metrics
 ```
@@ -41,6 +41,7 @@ analysis/{repo_name}/{sub_repo}/
 ## Features
 
 ### 🔄 **Intelligent Conversion**
+- **Endpoint Filtering**: Excludes swagger/OpenAPI documentation endpoints from catalog
 - **Endpoint Name Generation**: Creates business-friendly names from technical paths
 - **Category Classification**: Classifies into System/Process/Experience/Data/Integration
 - **Domain Mapping**: Maps to business domains (Policy/Claims/Customers/Agent/Billing)
@@ -107,7 +108,13 @@ Expects consolidated CSV from Workflow 3 with:
 
 ### Transformation Logic
 
-#### 1. Endpoint Name Generation
+#### 1. Endpoint Filtering
+- Exclude swagger/OpenAPI documentation endpoints from processing
+- Filter out paths containing: `/swagger`, `/swagger-ui`, `/api-docs`, `/openapi`
+- Remove endpoints with swagger-related descriptions or metadata
+- Ensure only business API endpoints are included in catalog
+
+#### 2. Endpoint Name Generation
 - Parse path and method to create meaningful names
 - Follow naming convention: Action + Entity + Qualifier
 - Ensure business-friendly terminology

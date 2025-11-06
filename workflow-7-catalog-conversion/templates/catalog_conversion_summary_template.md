@@ -4,7 +4,10 @@
 - **Conversion Date**: {CONVERSION_DATE}
 - **Source File**: {SOURCE_CSV_FILE}
 - **Output File**: `api_catalog.csv`
-- **Total Endpoints Processed**: {TOTAL_ENDPOINTS}
+- **Output Location**: `analysis/` (consolidated structure)
+- **Total Source Endpoints**: {TOTAL_SOURCE_ENDPOINTS}
+- **Swagger Endpoints Filtered**: {SWAGGER_ENDPOINTS_FILTERED}
+- **Business Endpoints Processed**: {BUSINESS_ENDPOINTS_PROCESSED}
 - **Successful Conversions**: {SUCCESSFUL_CONVERSIONS}
 - **Conversion Success Rate**: {SUCCESS_RATE}%
 
@@ -34,6 +37,14 @@
 | Exposure Type | Endpoint Count | Percentage |
 |---------------|----------------|------------|
 {EXPOSURE_STATISTICS}
+
+## Filtering Summary
+
+### Swagger/OpenAPI Endpoint Filtering
+- **Total Swagger Endpoints Excluded**: {SWAGGER_ENDPOINTS_FILTERED}
+- **Filtered Patterns**: `/swagger`, `/swagger-ui`, `/api-docs`, `/openapi`, `/docs`
+- **Description-based Filtering**: Endpoints with "swagger", "openapi", or "documentation" in descriptions
+- **Remaining Business Endpoints**: {BUSINESS_ENDPOINTS_PROCESSED}
 
 ## Transformation Summary
 
@@ -90,14 +101,14 @@
 3. **Domain Classification**: {UNCLASSIFIED_DOMAINS} endpoints need domain assignment
 
 ### Catalog Enhancement
-1. **API Specification**: Add OpenAPI/Swagger URLs to `API_Spec_URL` column
-2. **Creation Dates**: Populate `Created` column with actual endpoint creation dates
-3. **Version Management**: Standardize version information across all endpoints
+1. **Creation Dates**: Populate `Created` column with actual endpoint creation dates
+2. **Version Management**: Standardize version information across all endpoints
+3. **API Specifications**: Add OpenAPI specification URLs to `API_Spec_URL` column when available
 
 ## Next Steps
 
 1. **Review Generated Catalog**: Validate endpoint names and classifications
-2. **Update Missing Fields**: Complete `API_Spec_URL` and `Created` columns
+2. **Update Missing Fields**: Complete `Created` and version information columns
 3. **Domain Validation**: Confirm business domain assignments
 4. **Integration**: Import catalog into enterprise API management platform
 

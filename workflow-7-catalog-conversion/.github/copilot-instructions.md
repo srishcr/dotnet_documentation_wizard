@@ -21,7 +21,7 @@ When a user says any of these, execute this workflow:
 - **Authentication context** (helps determine auth types)
 
 ## Output
-Creates catalog conversion in `analysis/{repo_name}/{sub_repo}/`:
+Creates catalog conversion in `analysis/`:
 - `api_catalog.csv` - Standardized catalog format
 - `catalog_conversion_summary.md` - Conversion summary and statistics
 
@@ -91,17 +91,23 @@ Set standard defaults:
 
 ## Processing Steps
 
-### Step 1: Load and Validate Source CSV
+### Step 1: Load, Filter, and Validate Source CSV
 ```powershell
 # Load consolidated endpoint inventory
 $sourceCSV = Import-Csv "path/to/consolidated_endpoint_inventory.csv"
+
+# Filter out swagger/OpenAPI documentation endpoints
+$filteredCSV = $sourceCSV | Where-Object {
+    $_.Endpoint_Path -notmatch "/swagger|/swagger-ui|/api-docs|/openapi|/docs" -and
+    $_.Endpoint_Description -notmatch "swagger|openapi|documentation"
+}
 
 # Validate required columns exist
 $requiredColumns = @("Service_Name", "Endpoint_Path", "HTTP_Method", "Endpoint_Description", "Notes", "Authentication", "Business_Domain")
 ```
 
 ### Step 2: Transform Each Endpoint
-For each row in source CSV:
+For each row in filtered CSV (excluding swagger endpoints):
 1. **Generate Endpoint Name**: Create business-friendly name from path and method
 2. **Determine Category**: Classify based on path patterns and functionality
 3. **Combine Description**: Merge Endpoint_Description and Notes fields

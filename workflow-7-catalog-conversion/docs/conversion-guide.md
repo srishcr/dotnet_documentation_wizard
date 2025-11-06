@@ -17,10 +17,11 @@ Service_Name,Code,Endpoint_Type,HTTP_Method,Endpoint_Path,Endpoint_Description,V
 
 ## Conversion Process
 
-### Step 1: Source Validation
-Before conversion, validate your source CSV:
+### Step 1: Source Validation and Filtering
+Before conversion, validate and filter your source CSV:
 - Confirm "Service_Name" column exists as first column
-- Verify all endpoints have HTTP methods
+- Filter out swagger/OpenAPI documentation endpoints (paths containing `/swagger`, `/swagger-ui`, `/api-docs`, `/openapi`)
+- Verify all remaining endpoints have HTTP methods
 - Check endpoint paths are properly formatted
 - Ensure authentication fields are populated
 
@@ -36,6 +37,25 @@ Check generated files:
 - `catalog_conversion_summary.md` - Conversion statistics
 
 ## Conversion Rules
+
+### Endpoint Filtering Rules
+
+#### Swagger/OpenAPI Endpoints to Exclude
+| Path Pattern | Description | Reason |
+|--------------|-------------|--------|
+| `/swagger` | Swagger UI root | Documentation interface |
+| `/swagger-ui` | Swagger UI interface | Documentation interface |
+| `/swagger/v1/swagger.json` | Swagger JSON spec | API specification |
+| `/swagger/v1/swagger.yaml` | Swagger YAML spec | API specification |
+| `/api-docs` | API documentation | Documentation endpoints |
+| `/openapi.json` | OpenAPI specification | API specification |
+| `/openapi.yaml` | OpenAPI specification | API specification |
+| `/docs` | General documentation | Documentation endpoints |
+
+#### Filtering Criteria
+- **Path-based filtering**: Exclude endpoints with swagger-related path segments
+- **Description-based filtering**: Remove endpoints with "swagger", "openapi", or "documentation" in descriptions
+- **Method-based filtering**: Exclude documentation-specific HTTP methods on documentation paths
 
 ### Endpoint Name Generation Rules
 

@@ -1,0 +1,13 @@
+Service_Name,Endpoint_Name,Endpoint_Category,Endpoint_Description,Domain,Endpoint_Type,Endpoint_Method,Endpoint_Path,Web_Domains,Authentication_Type,API_Spec_URL,Lifecycle_Status,Version,Created,API_Exposure_Type
+PolicyService,Get Policy Details,Data,Retrieve comprehensive policy information including coverage details and terms,Policy,REST_API,GET,/api/v1/policies/{policyId},api.internal.com,OAuth,,Live,v1,,Private
+PolicyService,Create New Policy,Process,Create a new insurance policy with coverage specifications,Policy,REST_API,POST,/api/v1/policies,api.internal.com,OAuth,,Live,v1,,Private
+PolicyService,Search Policies,Experience,Search and filter policies based on various criteria,Policy,REST_API,GET,/api/v1/policies/search,agent.portal.com,OAuth,,Live,v1,,Private
+ClaimsService,Submit New Claim,Process,Submit a new insurance claim for processing,Claims,REST_API,POST,/api/v1/claims,api.customer.com,OAuth,,Live,v1,,Public
+ClaimsService,Get Claim Status,Experience,Retrieve current status and details of an insurance claim,Claims,REST_API,GET,/api/v1/claims/{claimId}/status,api.customer.com,OAuth,,Live,v1,,Public
+ClaimsService,Update Claim Status,Process,Update the processing status of an insurance claim,Claims,REST_API,PUT,/api/v1/claims/{claimId}/status,api.internal.com,OAuth,,Live,v1,,Private
+CustomerService,Get Customer Profile,Data,Retrieve comprehensive customer profile information,Customers,REST_API,GET,/api/v1/customers/{customerId},api.internal.com,OAuth,,Live,v1,,Private
+CustomerService,Update Customer Profile,Data,Update customer profile information and preferences,Customers,REST_API,PUT,/api/v1/customers/{customerId},api.customer.com,OAuth,,Live,v1,,Public
+AgentService,Get Agent Dashboard,Experience,Retrieve agent dashboard with key metrics and activities,Agent,REST_API,GET,/api/v1/agents/{agentId}/dashboard,agent.portal.com,OAuth,,Live,v1,,Private
+BillingService,Process Payment,Process,Process insurance premium payment,Billing,REST_API,POST,/api/v1/billing/payments,api.customer.com,OAuth,,Live,v1,,Public
+SystemHealth,Health Check,System,System health and availability status check,System,REST_API,GET,/health,api.internal.com,None,,Live,v1,,Private
+SystemHealth,Application Status,System,Detailed application status and diagnostics,System,REST_API,GET,/api/v1/status,admin.internal.com,API Key,,Live,v1,,Private

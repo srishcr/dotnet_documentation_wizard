@@ -98,77 +98,52 @@ Set standard defaults:
 - **Version**: Extract from endpoint path or default to "v1"
 - **API_Exposure_Type**: Determine from endpoint pattern and authentication
 
-## Processing Steps
+## Processing Instructions
 
-### Step 1: Load, Filter, and Validate Source CSV
-```powershell
-# Load consolidated endpoint inventory
-$sourceCSV = Import-Csv "path/to/consolidated_endpoint_inventory.csv"
+### Direct CSV Creation by Copilot
+**IMPORTANT**: Do NOT create PowerShell scripts. Directly create the output CSV file yourself.
 
-# Filter out swagger/OpenAPI documentation endpoints
-$filteredCSV = $sourceCSV | Where-Object {
-    $_.Endpoint_Path -notmatch "/swagger|/swagger-ui|/api-docs|/openapi|/docs" -and
-    $_.Endpoint_Description -notmatch "swagger|openapi|documentation"
-}
+### Conversion Process
+1. **Load Source CSV**: Read the consolidated endpoint inventory CSV
+2. **Filter Endpoints**: Exclude swagger/OpenAPI documentation endpoints
+3. **Transform Each Row**: For each business endpoint, create catalog entry
+4. **Generate Output Files**: Create `api_catalog.csv` and `catalog_conversion_summary.md`
 
-# Validate required columns exist
-$requiredColumns = @("Service_Name", "Endpoint_Path", "HTTP_Method", "Endpoint_Description", "Notes", "Authentication", "Business_Domain")
-```
+### Row-by-Row Transformation Logic
+For each endpoint in source CSV (excluding swagger endpoints):
 
-### Step 2: Transform Each Endpoint (PowerShell Implementation)
-**IMPORTANT**: Always create PowerShell scripts, NOT Python scripts. This runs on Windows without Python.
+**1. Generate Descriptive Endpoint Name**:
+- Analyze `Endpoint_Description` and `Notes` for specific context
+- Extract distinguishing factors (search criteria, workflow stage, purpose)
+- Create specific name to avoid duplicates
+- Format: "Action Entity Qualifier" (max 6 words)
 
-```powershell
-# PowerShell conversion logic for each endpoint
-foreach ($endpoint in $filteredCSV) {
-    # 1. Generate descriptive endpoint name using context
-    $pathParts = $endpoint.Endpoint_Path -split '/'
-    $description = $endpoint.Endpoint_Description
-    $notes = $endpoint.Notes
-    $method = $endpoint.HTTP_Method
+**2. Determine Category**:
+- System: /health, /status, /config, /diagnostics
+- Process: /workflow, /approve, /process, /submit
+- Experience: /search, /list, /dashboard, /summary
+- Data: Standard CRUD operations
+- Integration: /webhook, /callback, /external
 
-    # Create specific name using description context to avoid duplicates
-    $endpointName = Generate-DescriptiveEndpointName -Path $endpoint.Endpoint_Path -Method $method -Description $description -Notes $notes
+**3. Map Domain**:
+- Policy: /policy, /quote, /renewal, /coverage
+- Claims: /claim, /loss, /settlement, /adjustment
+- Customers: /customer, /user, /contact, /profile
+- Agent: /agent, /broker, /commission, /territory
+- Billing: /payment, /invoice, /billing, /account
 
-    # 2-7. Apply other transformations...
-}
+**4. Standardize Authentication**:
+- "JWT Bearer" → "OAuth"
+- "API Key" → "API Key"
+- "None"/"Anonymous" → "None"
+- "Basic Auth" → "Basic"
 
-function Generate-DescriptiveEndpointName {
-    param($Path, $Method, $Description, $Notes)
-
-    # Combine description and notes for context
-    $context = "$Description $Notes".Trim()
-
-    # Extract key differentiators from context
-    if ($context -match "postcode|postal") { $qualifier = "By Postcode" }
-    elseif ($context -match "address") { $qualifier = "By Address" }
-    elseif ($context -match "pre.*reg|preregister") { $qualifier = "Preregister" }
-    elseif ($context -match "new.*account|full.*account") { $qualifier = "New Account" }
-    # Add more specific patterns...
-
-    # Build descriptive name: Action + Entity + Qualifier
-    return "$verb $entity $qualifier"
-}
-```
-
-For each row in filtered CSV (excluding swagger endpoints):
-1. **Generate Descriptive Name**: Use path + method + description context to create specific names
-2. **Determine Category**: Classify based on path patterns and functionality
-3. **Combine Description**: Merge Endpoint_Description and Notes fields
-4. **Map Domain**: Classify into business domain
-5. **Standardize Authentication**: Convert to standard format
-6. **Determine Exposure**: Classify as Public/Private based on patterns
-7. **Extract Version**: Parse version from path or default
-
-### Step 3: Quality Validation
-- **Completeness Check**: Ensure all required fields populated
-- **Consistency Check**: Verify consistent naming and categorization
-- **Duplication Detection**: Identify potential duplicate endpoints
-- **Business Logic Validation**: Check domain and category assignments
-
-### Step 4: Generate Outputs
-- **API Catalog CSV**: Complete catalog in target format
-- **Conversion Summary**: Statistics and transformation details
+**5. Set Default Values**:
+- API_Spec_URL: (blank)
+- Lifecycle_Status: "Live"
+- Created: (blank)
+- Version: Extract from path or "v1"
+- API_Exposure_Type: Public/Private based on authentication and path
 
 ## Conversion Rules
 
@@ -218,12 +193,12 @@ Based on endpoint characteristics:
 
 ## Implementation Requirements
 
-### PowerShell-Only Implementation
-**CRITICAL**: Always generate PowerShell scripts (.ps1), NEVER Python scripts.
-- Target environment is Windows without Python installed
-- Use PowerShell cmdlets: Import-Csv, Export-Csv, Select-Object, Where-Object
-- Use PowerShell string operations and regex matching
-- Create .ps1 files for conversion automation
+### Direct Output Creation
+**CRITICAL**: Do NOT create scripts. Directly create the output CSV file.
+- Read the source CSV and transform each row directly
+- Create the `api_catalog.csv` file with proper formatting
+- Generate the conversion summary markdown file
+- No intermediate scripts or automation tools
 
 ### Duplicate Name Prevention
 **CRITICAL**: Avoid endpoint name collisions by using context:
@@ -247,10 +222,30 @@ Resolved:
 - "Create New Customer Account"
 ```
 
+### Naming Examples with Context
+Use the full description and notes to create specific names:
+```
+Path: /api/v1/address/search
+Description: "Search address database by postcode lookup"
+→ Name: "Search Address By Postcode"
+
+Path: /api/v1/address/search
+Description: "Search address database by full address string"
+→ Name: "Search Address By String"
+
+Path: /api/v1/customer/register
+Description: "Pre-registration for customer account setup"
+→ Name: "Preregister Customer Account"
+
+Path: /api/v1/customer/create
+Description: "Create complete customer account with full validation"
+→ Name: "Create Customer Account"
+```
+
 ## Success Criteria
-- Complete conversion using PowerShell scripts only
+- Direct creation of output CSV without intermediate scripts
 - Unique and descriptive endpoint names with zero duplicates
-- Context-driven naming using Endpoint_Description and Notes
+- Context-driven naming using full Endpoint_Description and Notes
 - Proper business domain mapping
 - Standard authentication type classification
 - Ready for enterprise API catalog integration

@@ -6,8 +6,8 @@ This guide provides detailed instructions for converting consolidated endpoint i
 ## Prerequisites
 
 ### System Requirements
-- **Windows PowerShell**: Environment must have PowerShell available
-- **No Python Required**: Workflow generates PowerShell scripts only
+- **No Scripts Generated**: Copilot creates output files directly
+- **No Additional Tools Required**: Conversion happens during copilot execution
 
 ### Required Input
 - **Consolidated Endpoint Inventory CSV** from Workflow 3 outputs
@@ -35,9 +35,11 @@ Use the trigger command:
 Convert endpoint inventory to catalog format
 ```
 
+The copilot will directly read your source CSV and create the output files without generating any intermediate scripts.
+
 ### Step 3: Review Output
 Check generated files:
-- `api_catalog.csv` - Main catalog output
+- `api_catalog.csv` - Main catalog output (created directly by copilot)
 - `catalog_conversion_summary.md` - Conversion statistics
 
 ## Conversion Rules
